@@ -5,7 +5,7 @@ class JoinRoom extends Component {
       return (
         <div className="JoinRoom">
           
-          join
+          <button>Join Room</button>
   
         </div>
       );

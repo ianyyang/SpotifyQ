@@ -11,8 +11,15 @@ class App extends Component{
     this.state ={
         loggedIn: params.access_token ? true : false,
         nowPlaying: { 
-          name: 'Not Checked', 
-          image: '',
+            name: '', 
+            image: '',
+        },
+        userInfo: {
+            country: '',
+            display_name: '',
+            email: '',
+            id: '' ,
+            images: ''   
         },
         playlists: [],
         devices: []
@@ -34,6 +41,25 @@ class App extends Component{
     }
     return hashParams;
   }
+
+    // Get the authenticated user
+    getCurrentUser(){
+        spotifyWebApi.getMe()
+        .then((response) =>{
+            console.log('User ID:', response.id);
+            this.setState({
+                userInfo: {
+                    country: response.country,
+                    display_name: response.display_name,
+                    email: response.email,
+                    id: response.id
+                }
+            })
+
+        }, function(err) {
+            console.log('Something went wrong!', err);
+    });
+    }
 
   getNowPlaying(){
     spotifyWebApi.getMyCurrentPlaybackState()
@@ -98,9 +124,9 @@ class App extends Component{
   }
 
   postNewPlaylist(){
-    spotifyWebApi.createPlaylist('spangebobu', {'name': 'User Playlist'})
+    spotifyWebApi.createPlaylist(this.state.userInfo.id, {'name': 'User Playlist'})
     .then(function(data) {
-      console.log('New playlist created!', data);
+      alert('New playlist created!', data);
     }, function(err) {
       console.error('Something went wrong!', err);
     })
@@ -134,7 +160,7 @@ class App extends Component{
   }
   
   addTrack() {
-    spotifyWebApi.addTracksToPlaylist('2b9MxDp4N1UgAkzRWvRKQz', ["spotify:track:4iV5W9uYEdYUVa79Axb7Rh", "spotify:track:1301WleyT98MSxVHPZCA6M"])
+    spotifyWebApi.addTracksToPlaylist(this.state.userInfo.id,'7Dcs93HOnJYPL6fJc9yqW2', ["spotify:track:4iV5W9uYEdYUVa79Axb7Rh"])
     .then(function(data) {
       console.log('Added tracks to playlist!');
     }, function(err) {
@@ -142,12 +168,22 @@ class App extends Component{
     });
   }
 
+  MakeItem = function(X) {
+    return <option>{X.name}</option>;
+  };
+
   render(){
       return (
         <div className="App">
           <a href = "http://localhost:8888">
             <button>Login with Spotify</button>
           </a>
+
+        <h1>Hosted By: {this.state.userInfo.display_name}</h1>
+        
+        <button onClick={() => this.getCurrentUser()}>
+            Get User
+        </button>
         
           <div> Now Playing: {this.state.nowPlaying.name}</div>
           <div>
@@ -158,11 +194,8 @@ class App extends Component{
           </button>
 
           <div>
-            <ul>Playlists:
-              {(this.state.playlists || []).map(item => (            
-                <li key={item.id}>Name: {item.name} <br/> ID: {item.id}</li>
-          ))}
-            </ul>
+            <ul>Playlists:</ul>
+              <select>{this.state.playlists.map(this.MakeItem)}</select>
           </div>
 
           <button onClick={() => this.getUserPlaylists()}>
@@ -170,11 +203,8 @@ class App extends Component{
           </button>
 
           <div>
-            <ul>Devices:
-              {(this.state.devices || []).map(item => (            
-                <li key={item.id}>Name: {item.name} <br/> ID: {item.id}</li>
-          ))}
-            </ul>
+            <ul>Devices:</ul>
+                <select>{this.state.devices.map(this.MakeItem)}</select>
           </div>
 
           <button onClick={() => this.getUserDevices()}>
@@ -200,7 +230,7 @@ class App extends Component{
           </button>
 
           <button onClick={() => this.addTrack()}>
-            (error) Add Track to Playlist
+            Add Track to Playlist
           </button>
         </div>
       );
