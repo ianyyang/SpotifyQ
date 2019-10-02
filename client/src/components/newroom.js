@@ -100,26 +100,24 @@ class NewRoom extends Component {
         return <option>{X.name}</option>;
       };
 
+    
+
     render() {
       return (
         <div>
-            <h1>Room Hosted By: {this.state.userInfo.display_name}</h1>
+            {this.getCurrentUser()}
+            {this.getUserDevices()}
+            {this.getUserPlaylists()}
             
-            <button onClick={() => this.getCurrentUser()}>
-                Get User
-            </button>
+            <h1>Room Hosted By: {this.state.userInfo.display_name}</h1>
             <ul>Choose Device:</ul>
-                <select id="devices">{this.state.devices.map(this.MakeItem)}</select>
-            <button onClick={() => this.getUserDevices()}>Get Devices</button> 
+            <select id="devices">{this.state.devices.map(this.MakeItem)}</select>
 
              <div>
             <ul>Choose Playlist:</ul>
                 <select>{this.state.playlists.map(this.MakeItem)}</select>
             </div>
 
-            <button onClick={() => this.getUserPlaylists()}>
-            Get Playlists
-            </button> 
             <button>
             Next
             </button> 
