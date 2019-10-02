@@ -155,31 +155,31 @@ class AppFunc extends Component{
     });
   }
 
-  // searchAll() {
-  //   if (this.state.search == ''){
-  //       this.state.search = ' ';
-  //   }  
+  searchAll() {
+    if (this.state.search == ''){
+        this.state.search = ' ';
+    }  
 
-  //   spotifyWebApi.search(this.state.search, ['track'])
-  //   .then((response) => {
-  //     console.log('Search success!', response);
-  //     var json = response.tracks.items;
-  //     var arr = [];
+    /*spotifyWebApi.search(this.state.search, ['track'])
+    .then((response) => {
+      console.log('Search success!', response);
+      var json = response.tracks.items;
+      var arr = [];
 
-  //     Object.keys(json).forEach(function(key) {
-  //       arr.push({
-  //           name: json[key].name,
-  //           id: json[key].id
-  //         })
-  //     });
+      Object.keys(json).forEach(function(key) {
+        arr.push({
+            name: json[key].name,
+            id: json[key].id
+          })
+      });
 
-  //     this.setState({
-  //       searchResults: arr
-  //     }, function(err) {
-  //       console.error('Something went wrong!', err);
-  //     });
-  //   });
-  // }
+      this.setState({
+        searchResults: arr
+      }, function(err) {
+        console.error('Something went wrong!', err);
+      });
+    });*/
+  }
   
   addTrack() {
     spotifyWebApi.addTracksToPlaylist(this.state.userInfo.id,'7Dcs93HOnJYPL6fJc9yqW2', ["spotify:track:4iV5W9uYEdYUVa79Axb7Rh"])

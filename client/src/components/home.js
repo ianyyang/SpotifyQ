@@ -3,18 +3,27 @@ import React, { Component } from 'react';
 // Components
 import JoinRoom from './joinroom'
 import AppFunc from '../App-function'
+import NewRoom from './newroom'
+import Spotify from 'spotify-web-api-js';
+
 
 class Home extends Component {
     constructor(){
         super();
         const params = this.getHashParams();
+        const WebApi = new Spotify();
+
         this.state ={
             render:'',
             loggedIn: params.access_token ? true : false,
+            spotifyWebApi: WebApi
         }
 
         if (this.state.loggedIn){
             this.state.render = 'new'}
+        if (params.access_token){
+            this.state.spotifyWebApi.setAccessToken(params.access_token);
+        }
     }
 
     /**
@@ -39,7 +48,7 @@ class Home extends Component {
     _renderSubComp(){
         switch(this.state.render){
             case 'login': window.location.assign('http://localhost:8888/login')
-            case 'new': return <AppFunc/>              
+            case 'new': return <NewRoom {...this.state}/>              
             case 'join': return <JoinRoom/>
             default: return(
                 <div className="Home">        
