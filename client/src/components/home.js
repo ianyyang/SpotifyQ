@@ -33,12 +33,12 @@ class Home extends Component {
 
     handleClick(compName, e){
         console.log(compName);
-        this.setState({render:compName});        
+        this.setState({render:compName});
     }
+
     _renderSubComp(){
         switch(this.state.render){
-            case 'login': return (<a href = "http://localhost:8888">
-            <button>Login with Spotify</button> </a>)
+            case 'login': window.location.assign('http://localhost:8888/login')
             case 'new': return <AppFunc/>              
             case 'join': return <JoinRoom/>
             default: return(
