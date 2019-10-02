@@ -8,24 +8,51 @@ class JoinRoom extends Component {
         super();
         this.state = {
             render: '',
+            invalid: false,
             name: '',
             accessCode: ''}
     }
 
-    handleClick(compName, e){
-        console.log(compName);
-        this.setState({render:compName});        
+    handleClick(e){
+        console.log();
+        if (this.state.name != '' && this.state.accessCode != '') {
+            this.setState({invalid:false});
+            this.setState({render:'next'});
+        } else {
+            this.setState({invalid:true});
+        }
+    }
+
+    _renderInvalid(){
+        switch(this.state.invalid){
+            case true: return <div>Please enter a valid name and/or access code!</div>
+            default: return null;
+        }
     }
 
     _renderSubComp(){
         switch(this.state.render){
-            case 'next':
-                if (this.state.name != '' && this.state.accessCode != '') {
-                    return <GuestRoom {...this.state}/>
-                } else {
-                    return <div> Please enter a valid name and/or access code!</div>
-                }
-            default: return null;
+            case 'next': 
+                return <GuestRoom {...this.state}/>
+            default: return (
+                <div class="JoinRoom">
+                    <form>
+                        <label>
+                            Name:
+                            <input type="text" onChange={this.handleChangeName.bind(this)} />
+                        </label>
+                    </form>
+
+                    <form>
+                        <label>
+                            Access Code:
+                            <input type="text" onChange={this.handleChangeAccessCode.bind(this)} />
+                        </label>
+                    </form>
+
+                    <button onClick={this.handleClick.bind(this)}>Next</button>
+                </div>
+            );
         }
     }
 
@@ -40,22 +67,8 @@ class JoinRoom extends Component {
     render() {
       return (
         <div className="JoinRoom">
-            <form>
-                <label>
-                    Name:
-                    <input type="text" onChange={this.handleChangeName.bind(this)} />
-                </label>
-            </form>
-
-            <form>
-                <label>
-                    Access Code:
-                    <input type="text" onChange={this.handleChangeAccessCode.bind(this)} />
-                </label>
-            </form>
-
-            <button onClick={this.handleClick.bind(this, 'next')}>Next</button>
             {this._renderSubComp()}
+            {this._renderInvalid()}
         </div>      
       );
     }
