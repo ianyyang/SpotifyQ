@@ -160,7 +160,7 @@ class AppFunc extends Component{
         this.state.search = ' ';
     }  
 
-    /*spotifyWebApi.search(this.state.search, ['track'])
+    spotifyWebApi.search(this.state.search, ['track'])
     .then((response) => {
       console.log('Search success!', response);
       var json = response.tracks.items;
@@ -178,7 +178,7 @@ class AppFunc extends Component{
       }, function(err) {
         console.error('Something went wrong!', err);
       });
-    });*/
+    });
   }
   
   addTrack() {
@@ -201,10 +201,6 @@ class AppFunc extends Component{
   render(){
       return (
         <div className="App">
-          <a href = "http://localhost:8888">
-            <button>Login with Spotify</button>
-          </a>
-
             <h1>Hosted By: {this.state.userInfo.display_name}</h1>
             
             <button onClick={() => this.getCurrentUser()}>

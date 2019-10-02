@@ -1,14 +1,34 @@
 import React, { Component } from 'react';
 
 // Components
-import NewRoom from './newroom'
 import JoinRoom from './joinroom'
 import AppFunc from '../App-function'
 
 class Home extends Component {
     constructor(){
         super();
-        this.state = {render:''}
+        const params = this.getHashParams();
+        this.state ={
+            render:'',
+            loggedIn: params.access_token ? true : false,
+        }
+
+        if (this.state.loggedIn){
+            this.state.render = 'new'}
+    }
+
+    /**
+     * Obtains parameters from the hash of the URL
+     * @return Object
+    */
+    getHashParams() {
+        var hashParams = {};
+        var e, r = /([^&;=]+)=?([^&;]*)/g,
+            q = window.location.hash.substring(1);
+        while ( e = r.exec(q)) {
+            hashParams[e[1]] = decodeURIComponent(e[2]);
+        }
+        return hashParams;
     }
 
     handleClick(compName, e){
