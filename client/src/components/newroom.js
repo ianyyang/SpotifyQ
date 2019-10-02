@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import App from '../App-function'
+import AppFunc from '../App-function'
 
 class NewRoom extends Component {
     constructor(){
@@ -14,7 +14,8 @@ class NewRoom extends Component {
     }
     _renderSubComp(){
         switch(this.state.render){
-            case 'new': return <App/>
+            case 'new': return <AppFunc/>
+            default: return null;
         }
     }
 

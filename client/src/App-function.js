@@ -4,7 +4,7 @@ import Spotify from 'spotify-web-api-js';
 
 const spotifyWebApi = new Spotify();
 
-class App extends Component{
+class AppFunc extends Component{
   constructor(){
     super();
     const params = this.getHashParams();
@@ -22,8 +22,11 @@ class App extends Component{
             images: ''   
         },
         playlists: [],
-        devices: []
+        devices: [],
+        search: '',
+        searchResults: []
     }
+
     if (params.access_token){
       spotifyWebApi.setAccessToken(params.access_token);
     }
@@ -133,7 +136,8 @@ class App extends Component{
   }
 
   resumePlayback(){
-    spotifyWebApi.play({device: 'c8b21c1c42ad5a09d0d44a150f8508199e301abc'})
+    var index = document.getElementById('devices').selectedIndex;
+    spotifyWebApi.play({device: this.state.devices[index].id})
     .then(function(data) {
       console.log('Playback resumed!', data);
     }, function(err) {
@@ -142,7 +146,8 @@ class App extends Component{
   }
 
   pausePlayback() {
-    spotifyWebApi.pause({device: 'c8b21c1c42ad5a09d0d44a150f8508199e301abc'})
+    var index = document.getElementById('devices').selectedIndex;
+    spotifyWebApi.pause({device: this.state.devices[index].id})
     .then(function(data) {
       console.log('Playback paused!');
     }, function(err) {
@@ -151,12 +156,29 @@ class App extends Component{
   }
 
   searchAll() {
-    spotifyWebApi.search('Love', ['album', 'artist', 'track'])
-    .then(function(data) {
-      console.log('Search success!');
-    }, function(err) {
-      console.error('Something went wrong!', err);
-    });
+    if (this.state.search == ''){
+        this.state.search = ' ';
+    }  
+
+    /*spotifyWebApi.search(this.state.search, ['track'])
+    .then((response) => {
+      console.log('Search success!', response);
+      var json = response.tracks.items;
+      var arr = [];
+
+      Object.keys(json).forEach(function(key) {
+        arr.push({
+            name: json[key].name,
+            id: json[key].id
+          })
+      });
+
+      this.setState({
+        searchResults: arr
+      }, function(err) {
+        console.error('Something went wrong!', err);
+      });
+    });*/
   }
   
   addTrack() {
@@ -172,6 +194,10 @@ class App extends Component{
     return <option>{X.name}</option>;
   };
 
+  handleChange(event) {
+    this.setState({search: event.target.value});
+  }
+
   render(){
       return (
         <div className="App">
@@ -179,62 +205,75 @@ class App extends Component{
             <button>Login with Spotify</button>
           </a>
 
-        <h1>Hosted By: {this.state.userInfo.display_name}</h1>
-        
-        <button onClick={() => this.getCurrentUser()}>
-            Get User
-        </button>
-        
-          <div> Now Playing: {this.state.nowPlaying.name}</div>
-          <div>
+            <h1>Hosted By: {this.state.userInfo.display_name}</h1>
+            
+            <button onClick={() => this.getCurrentUser()}>
+                Get User
+            </button>
+            
+            <div> Now Playing: {this.state.nowPlaying.name}</div>
+            <div>
             <img src={this.state.nowPlaying.image } style={{width:100}}/>
-          </div>
-          <button onClick={() => this.getNowPlaying()}>
+            </div>
+            <button onClick={() => this.getNowPlaying()}>
             Check Now Playing
-          </button>
+            </button>
 
-          <div>
+            <div>
             <ul>Playlists:</ul>
-              <select>{this.state.playlists.map(this.MakeItem)}</select>
-          </div>
+                <select>{this.state.playlists.map(this.MakeItem)}</select>
+            </div>
 
-          <button onClick={() => this.getUserPlaylists()}>
+            <button onClick={() => this.getUserPlaylists()}>
             Get Playlists
-          </button>
+            </button>
 
-          <div>
+            <div>
             <ul>Devices:</ul>
-                <select>{this.state.devices.map(this.MakeItem)}</select>
-          </div>
+                <select id="devices">{this.state.devices.map(this.MakeItem)}</select>
+            </div>
 
-          <button onClick={() => this.getUserDevices()}>
+            <button onClick={() => this.getUserDevices()}>
             Get Devices
-          </button>
+            </button>
 
-          <div></div>
-          <button onClick={() => this.postNewPlaylist()}>
+            <div></div>
+            <button onClick={() => this.postNewPlaylist()}>
             Create New Playlist
-          </button>          
+            </button>          
 
-          <button onClick={() => this.resumePlayback()}>
+            <button onClick={() => this.resumePlayback()}>
             Start/Resume Playback
-          </button>
+            </button>
 
-          <button onClick={() => this.pausePlayback()}>
+            <button onClick={() => this.pausePlayback()}>
             Pause Playback
-          </button>
+            </button>
 
-          <div></div>
-          <button onClick={() => this.searchAll()}>
+            <button onClick={() => this.searchAll()}>
             Search All
-          </button>
+            </button>
 
-          <button onClick={() => this.addTrack()}>
+            <form onSubmit={this.searchAll()}>
+                <label>
+                Search:
+                <input type="text" value={this.state.search} onChange={this.handleChange.bind(this)} />
+                </label>
+                <input type="submit" value="Submit" />
+            </form>
+
+            <ul>Tracks:
+              {(this.state.searchResults || []).map(item => (            
+                <li key={item.id}>Name: {item.name}</li>
+                ))}
+            </ul>
+
+            <button onClick={() => this.addTrack()}>
             Add Track to Playlist
-          </button>
+            </button>
         </div>
       );
     }  
 }
 
-export default App;
+export default AppFunc;
