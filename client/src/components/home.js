@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 
 // Components
 import JoinRoom from './joinroom'
-import AppFunc from '../App-function'
+//import AppFunc from '../App-function'
 import NewRoom from './newroom'
 import Spotify from 'spotify-web-api-js';
 
@@ -16,13 +16,25 @@ class Home extends Component {
         this.state ={
             render:'',
             loggedIn: params.access_token ? true : false,
-            spotifyWebApi: WebApi
-        }
-
-        if (this.state.loggedIn){
-            this.state.render = 'new'}
+            spotifyWebApi: WebApi,
+            userInfo: {
+                country: '',
+                display_name: '',
+                email: '',
+                id: '' ,
+                images: ''   
+            },
+            playlists: [],
+            devices: []
+        }   
         if (params.access_token){
             this.state.spotifyWebApi.setAccessToken(params.access_token);
+        }
+        if (this.state.loggedIn){
+            this.getCurrentUser();
+            this.getUserDevices();
+            this.getUserPlaylists();
+            this.state.render = 'new'
         }
     }
 
@@ -39,6 +51,71 @@ class Home extends Component {
         }
         return hashParams;
     }
+
+    // Get the authenticated user
+    getCurrentUser(){
+        this.state.spotifyWebApi.getMe()
+        .then((response) =>{
+            console.log('User ID:', response.id);
+            this.setState({
+                userInfo: {
+                    country: response.country,
+                    display_name: response.display_name,
+                    email: response.email,
+                    id: response.id
+                }
+            })
+
+        }, function(err) {
+            console.log('Something went wrong!', err);
+    });
+    }
+
+    getUserDevices(){
+        this.state.spotifyWebApi.getMyDevices()
+        .then((response) => {
+          console.log('User devices successfully captured!', response);
+            
+          var json = response.devices;
+          var arr = [];
+    
+          Object.keys(json).forEach(function(key) {
+            arr.push({
+                name: json[key].name,
+                id: json[key].id
+              });
+          });
+    
+          this.setState({
+            devices: arr
+          }, function(err) {
+            console.error('Something went wrong!', err);
+          });
+        })
+    }
+
+    getUserPlaylists(){
+        this.state.spotifyWebApi.getUserPlaylists()
+        .then((response) => {
+          console.log('User playlists successfully captured!', response);
+          
+          var json = response.items;
+          var arr = [];
+    
+          Object.keys(json).forEach(function(key) {
+            arr.push({
+                name: json[key].name,
+                id: json[key].id
+              })
+          });
+    
+          this.setState({
+            playlists: arr
+          }, function(err) {
+            console.error('Something went wrong!', err);
+          });
+        })
+      }
 
     handleClick(compName, e){
         console.log(compName);
