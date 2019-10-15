@@ -8,8 +8,41 @@ class HostRoom extends Component {
             nowPlaying: { 
                 name: '', 
                 image: '',
-            }
+            },
+            roomTracks: []
         }
+        /*if (this.state.loggedIn){
+            this.getPlaylistTracks()
+        }*/
+    }
+
+    getPlaylistTracks(){
+        this.props.spotifyWebApi.getPlaylistTracks('thelinmichael', '3ktAYNcRHpazJ9qecm3ptn', {
+            offset: 1,
+            limit: 5,
+            fields: 'items'
+          })
+          .then((response)  => {
+              console.log('The playlist contains these tracks', response);
+
+              var json = response.items;
+              var arr = [];
+
+              Object.keys(json).forEach(function(key) {
+                arr.push({
+                    name: json[key].track.name,
+                    id: json[key].track.id
+                  })
+              });
+
+              this.setState({
+                roomTracks: arr
+              })
+            },
+            function(err) {
+              console.log('Something went wrong!', err);
+            }
+          );
     }
 
     getNowPlaying(){
@@ -58,22 +91,34 @@ class HostRoom extends Component {
             default: return ( 
             <div>   
                 <h1>{this.props.userInfo.display_name}'s Room</h1>
-                <label>Access Code: </label> 
+                <label>Access Code: 1234</label> 
                 <div> Now Playing: {this.state.nowPlaying.name}</div><div>
-                <img src={this.state.nowPlaying.image } style={{width:100}}/>
+                    <img src={this.state.nowPlaying.image } style={{width:100}}/>
                 </div>
                 <button onClick={() => this.getNowPlaying()}>
                     Check Now Playing
                 </button>
+
+                <div>
+                    <label>Room Tracks:<br/>
+                        {this.state.roomTracks.map(this.MakeItem)}
+                    </label>
+                    <button onClick={() => this.getPlaylistTracks()}>
+                        Get Room Tracks
+                    </button>
+                </div>
             </div>
             );
         }
     }
 
+    MakeItem = function(X, i) {
+        return <li key={i}>{X.name}</li>;
+      };
+
     render() {
       return (
         <div className="HostRoom">        
-          <button onClick={this.handleClick.bind(this, 'new')}>Host Room</button>
           {this._renderSubComp()}
         </div>      
       );
