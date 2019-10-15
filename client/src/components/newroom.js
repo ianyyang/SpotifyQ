@@ -8,7 +8,6 @@ class NewRoom extends Component {
         super(props);
         this.state = {
             ...this.props,
-            newFlag: false,
             newPlaylist: "New Playlist",
             playlists:[], 
             selectedPlaylist:'',
@@ -22,7 +21,10 @@ class NewRoom extends Component {
         this.props.spotifyWebApi.createPlaylist(this.props.userInfo.id, {'name': this.state.newPlaylist})
         .then((response) => {
             //alert('New playlist created: ', response.name);
-            this.state.playlists.push(response);
+            this.props.playlists.push({
+                name: response.name,
+                id: response.id
+              });
         }, function(err) {
             console.error('Something went wrong!', err);
         })
@@ -54,19 +56,9 @@ class NewRoom extends Component {
     postAndGet(){
         this.postNewPlaylist();
         //this.getUserPlaylists();
-        this.state.newFlag = true;
-        window.location.reload();
+        //window.location.reload();
     }
     
-    buildListOfPlaylists = function(){
-        if (this.state.newFlag){
-            return this.state.playlists;
-        }else{
-            return this.props.playlists;
-        }
-
-    }
-
     handleClick(compName, e){
         console.log(compName);
         this.setState({render:compName});        
@@ -123,7 +115,7 @@ class NewRoom extends Component {
 
                 <div>
                 <label>Choose Room Playlist:<br/>
-                    <select id="playlists">{this.buildListOfPlaylists().map(this.MakeItem)}} onChange={this.handlePlaylistChange.bind(this)}</select>
+                    <select id="playlists">{this.props.playlists.map(this.MakeItem)}} onChange={this.handlePlaylistChange.bind(this)}</select>
                 </label>
                 </div>
                 
