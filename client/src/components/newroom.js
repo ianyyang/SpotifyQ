@@ -1,22 +1,21 @@
 import React, { Component } from 'react';
-
+ 
 import HostRoom from './hostroom'
-
-
+ 
 class NewRoom extends Component {
     constructor(props) {
         super(props);
         this.state = {
             ...this.props,
-            newPlaylist: "New Playlist",
-            playlists:[], 
-            selectedPlaylist:'',
+            playlists:[],
+            newPlaylist:'New Playlist',
+            selectedPlaylist: '',
             selectedDevice: ''
         };
-
+ 
       }
-    
-        
+   
+       
     postNewPlaylist(){
         this.props.spotifyWebApi.createPlaylist(this.props.userInfo.id, {'name': this.state.newPlaylist})
         .then((response) => {
@@ -29,22 +28,22 @@ class NewRoom extends Component {
             console.error('Something went wrong!', err);
         })
     }
-
+ 
     getUserPlaylists(){
         this.state.spotifyWebApi.getUserPlaylists()
         .then((response) => {
           console.log('User playlists successfully captured!', response);
-          
+         
           var json = response.items;
           var arr = [];
-    
+   
           Object.keys(json).forEach(function(key) {
             arr.push({
                 name: json[key].name,
                 id: json[key].id
               })
           });
-    
+   
           this.setState({
             playlists: arr
           }, function(err) {
@@ -52,92 +51,75 @@ class NewRoom extends Component {
           });
         })
       }
-
+ 
     postAndGet(){
         this.postNewPlaylist();
         //this.getUserPlaylists();
-        //window.location.reload();
+        window.location.reload();
     }
-    
+   
     handleClick(compName, e){
         console.log(compName);
         this.setState({render:compName});        
     }
-
-    handleChange(event) {
-        this.setState({newPlaylist: event.target.value});
-      }
-      
-    handlePlaylistChange = (event) => {
-        /*alert("test");
-        var index = event.nativeEvent.target.selectedIndex;
-        if (this.state.newFlag){
-            this.setState({selectedPlaylist: this.state.playlists[index]});
-        }else{
-            this.setState({selectedPlaylist: this.props.playlists[index]});
-        }*/
-
+ 
+    handleDeviceChange(event) {
+        this.setState({selectedDevice: event.target.value});
     }
-
-    /*validateAndNext() {
-        var d_index = document.getElementById('devices').selectedIndex;
-        var p_index = document.getElementById('playlists').selectedIndex;
-
-        this.setState({selectedDevice: this.props.devices[d_index]});
-
-        if (this.state.newFlag){
-            this.setState({selectedPlaylist: this.state.playlists[p_index]});
-        }else{
-            this.setState({selectedPlaylist: this.props.playlists[p_index]});
-        }
-
-        this.handleClick.bind(this, 'next')
-      }*/
-
+ 
+    handlePlaylistTextChange(event) {
+        this.setState({newPlaylist: event.target.value});
+        this.setState({selectedPlaylist: event.target.value});
+      }
+     
+    handlePlaylistListChange(event) {
+        this.setState({selectedPlaylist: event.target.value});
+    }
+ 
     _renderSubComp(){
         switch(this.state.render){
             case 'next': return <HostRoom {...this.props}/>
-
+ 
             default: return (
             <div>
                 <h1>New Room Hosted By: {this.props.userInfo.display_name}</h1>
                 <label>Choose Device: <br/>
-                <select id="devices">{this.props.devices.map(this.MakeItem)}</select>
+                <select id="devices" onClick={this.handleDeviceChange.bind(this)} onChange={this.handleDeviceChange.bind(this)}>{this.props.devices.map(this.MakeItem)}</select>
                 </label>
-
+ 
                 <div>
                     <label>
                     <br/> Create New Playlist: <br/>
-                    <input type="text" value={this.state.newPlaylist} onChange={this.handleChange.bind(this)} />
+                    <input type="text" value={this.state.newPlaylist} onClick={this.handlePlaylistTextChange.bind(this)} onChange={this.handlePlaylistTextChange.bind(this)} />
                     </label>
-                    <input onClick={() => this.postAndGet()} type="submit" value="Submit" /> 
+                    <input onClick={() => this.postAndGet()} type="submit" value="Submit" />
                 </div>
-
+ 
                 <div>
                 <label>Choose Room Playlist:<br/>
-                    <select id="playlists">{this.props.playlists.map(this.MakeItem)}} onChange={this.handlePlaylistChange.bind(this)}</select>
+                    <select id="playlists" onClick={this.handlePlaylistListChange.bind(this)} onChange={this.handlePlaylistListChange.bind(this)}>{this.props.playlists.map(this.MakeItem)}</select>
                 </label>
                 </div>
-                
-                <button onClick={this.handleClick.bind(this, 'next')}>Next</button> 
-
-
+               
+                <button onClick={() => this.handleClick('next', this)}>Next</button>
+ 
+ 
             </div>
                 );
         }
     }
-
+ 
     MakeItem = function(X, i) {
         return <option key={i}>{X.name}</option>;
       };
-
+ 
     render() {
       return (
-        <div>     
+        <div>  
             {this._renderSubComp()}
         </div>    
       );
     }
   }
-  
+ 
 export default NewRoom;
