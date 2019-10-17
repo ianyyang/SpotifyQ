@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import '../App.css';
 
 class HostRoom extends Component {
     constructor(){
@@ -11,42 +12,11 @@ class HostRoom extends Component {
             },
             roomTracks: []
         }
-        /*if (this.state.loggedIn){
-            this.getPlaylistTracks()
-        }*/
-    }
 
-    getPlaylistTracks(){
-        this.props.spotifyWebApi.getPlaylistTracks('thelinmichael', '3ktAYNcRHpazJ9qecm3ptn', {
-            offset: 1,
-            limit: 5,
-            fields: 'items'
-          })
-          .then((response)  => {
-              console.log('The playlist contains these tracks', response);
-
-              var json = response.items;
-              var arr = [];
-
-              Object.keys(json).forEach(function(key) {
-                arr.push({
-                    name: json[key].track.name,
-                    id: json[key].track.id
-                  })
-              });
-
-              this.setState({
-                roomTracks: arr
-              })
-            },
-            function(err) {
-              console.log('Something went wrong!', err);
-            }
-          );
     }
 
     getNowPlaying(){
-        this.props.spotifyWebApi.getMyCurrentPlaybackState()
+        this.props.props1.spotifyWebApi.getMyCurrentPlaybackState()
         .then((response) => {
           console.log('Now playing successfully captured!', response);
     
@@ -81,6 +51,10 @@ class HostRoom extends Component {
         });
       }*/
 
+    test(){
+        console.log(this.props);
+    }
+
     handleClick(compName, e){
         console.log(compName);
         this.setState({render:compName});        
@@ -90,8 +64,11 @@ class HostRoom extends Component {
             case 'new': return <div>this is the host room</div>
             default: return ( 
             <div>   
-                <h1>{this.props.userInfo.display_name}'s Room</h1>
-                <label>Access Code: 1234</label> 
+                <h1>{this.props.props1.userInfo.display_name}'s Room</h1>
+                <label>Access Code: 1234</label> <br/>
+                <label>Selected Playlist: {this.props.selectedPlaylist}</label> <br/>
+                <label>Selected Device: {this.props.selectedDevice}</label> 
+
                 <div> Now Playing: {this.state.nowPlaying.name}</div><div>
                     <img src={this.state.nowPlaying.image } style={{width:100}}/>
                 </div>
@@ -100,11 +77,21 @@ class HostRoom extends Component {
                 </button>
 
                 <div>
-                    <label>Room Tracks:<br/>
-                        {this.state.roomTracks.map(this.MakeItem)}
-                    </label>
-                    <button onClick={() => this.getPlaylistTracks()}>
-                        Get Room Tracks
+                    <h2>Room Queue:<br/></h2>
+                        
+                        <ul id="list_1">{
+                            this.props.roomTracks.length === 0 ? "Its empty... Add some tracks!"
+                            :this.props.roomTracks.map(this.MakeItem)}
+                        </ul>
+                    
+                    <button id="right" onClick={() => this.test()}>
+                        Add
+                    </button>
+                    <button>
+                        Play/Pause
+                    </button>
+                    <button>
+                        End Room
                     </button>
                 </div>
             </div>
