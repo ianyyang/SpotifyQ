@@ -67,6 +67,7 @@ class NewRoom extends Component {
         this.setState({selectedDevice: event.target.value});
     }
 
+<<<<<<< HEAD
     handlePlaylistTextChange(event) {
         this.setState({newPlaylist: event.target.value});
         this.setState({selectedPlaylist: event.target.value});
@@ -103,6 +104,19 @@ class NewRoom extends Component {
                 
                 <button onClick={this.handleClick('next', this)}>Next</button> 
 
+=======
+    render() {
+      return (
+        <div>
+            <h1>Room Hosted By: {this.state.userInfo.display_name}</h1>
+            
+            <button onClick={() => this.getCurrentUser()}>
+                Get User
+            </button>
+            <ul>Choose Device:</ul>
+                <select id="devices">{this.state.devices.map(this.MakeItem)}</select>
+            <button onClick={() => this.getUserDevices()}>Get Devices</button> 
+>>>>>>> parent of dd297ba... Automatic retrival of user, device, and playlist information
 
             </div>
                 );
@@ -113,10 +127,19 @@ class NewRoom extends Component {
         return <option key={i}>{X.name}</option>;
       };
 
+<<<<<<< HEAD
     render() {
       return (
         <div>   
             {this._renderSubComp()}
+=======
+            <button onClick={() => this.getUserPlaylists()}>
+            Get Playlists
+            </button> 
+            <button>
+            Next
+            </button> 
+>>>>>>> parent of dd297ba... Automatic retrival of user, device, and playlist information
         </div>    
       );
     }
