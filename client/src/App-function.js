@@ -156,8 +156,13 @@ class AppFunc extends Component{
   }
 
   searchAll() {
+<<<<<<< Updated upstream
     if (this.state.search === ''){
         this.setState({search: ' '});
+=======
+    if (this.state.search == ''){
+        this.state.search = ' ';
+>>>>>>> Stashed changes
     }  
 
     /*spotifyWebApi.search(this.state.search, ['track'])
