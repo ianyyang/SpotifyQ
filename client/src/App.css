@@ -35,3 +35,12 @@
 div, button {
   margin: 10px;
 }
+
+#right{
+    padding: 2px 22px;
+}
+#list_1 {
+    list-style: none;
+    margin: 0px;
+    padding: 0px;
+}

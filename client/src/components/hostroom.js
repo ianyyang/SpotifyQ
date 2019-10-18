@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import '../App.css';
 
 class HostRoom extends Component {
     constructor(){
@@ -8,12 +9,14 @@ class HostRoom extends Component {
             nowPlaying: { 
                 name: '', 
                 image: '',
-            }
+            },
+            roomTracks: []
         }
+
     }
 
     getNowPlaying(){
-        this.props.spotifyWebApi.getMyCurrentPlaybackState()
+        this.props.props1.spotifyWebApi.getMyCurrentPlaybackState()
         .then((response) => {
           console.log('Now playing successfully captured!', response);
     
@@ -48,6 +51,10 @@ class HostRoom extends Component {
         });
       }*/
 
+    test(){
+        console.log(this.props);
+    }
+
     handleClick(compName, e){
         console.log(compName);
         this.setState({render:compName});        
@@ -57,23 +64,48 @@ class HostRoom extends Component {
             case 'new': return <div>this is the host room</div>
             default: return ( 
             <div>   
-                <h1>{this.props.userInfo.display_name}'s Room</h1>
-                <label>Access Code: </label> 
+                <h1>{this.props.props1.userInfo.display_name}'s Room</h1>
+                <label>Access Code: 1234</label> <br/>
+                <label>Selected Playlist: {this.props.selectedPlaylist}</label> <br/>
+                <label>Selected Device: {this.props.selectedDevice}</label> 
+
                 <div> Now Playing: {this.state.nowPlaying.name}</div><div>
-                <img src={this.state.nowPlaying.image } style={{width:100}}/>
+                    <img src={this.state.nowPlaying.image } style={{width:100}}/>
                 </div>
                 <button onClick={() => this.getNowPlaying()}>
                     Check Now Playing
                 </button>
+
+                <div>
+                    <h2>Room Queue:<br/></h2>
+                        
+                        <ul id="list_1">{
+                            this.props.roomTracks.length === 0 ? "Its empty... Add some tracks!"
+                            :this.props.roomTracks.map(this.MakeItem)}
+                        </ul>
+                    
+                    <button id="right" onClick={() => this.test()}>
+                        Add
+                    </button>
+                    <button>
+                        Play/Pause
+                    </button>
+                    <button>
+                        End Room
+                    </button>
+                </div>
             </div>
             );
         }
     }
 
+    MakeItem = function(X, i) {
+        return <li key={i}>{X.name}</li>;
+      };
+
     render() {
       return (
         <div className="HostRoom">        
-          <button onClick={this.handleClick.bind(this, 'new')}>Host Room</button>
           {this._renderSubComp()}
         </div>      
       );
