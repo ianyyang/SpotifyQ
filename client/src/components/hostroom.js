@@ -62,7 +62,7 @@ class HostRoom extends Component {
     _renderSubComp(){
         switch(this.state.render){
             case 'new': return <div>this is the host room</div>
-            case 'search': return <Search props2={this.props}/>
+            case 'search': return <Search props2={this.props} selectedPlaylistID={this.props.selectedPlaylistID}/>
             default: return ( 
             <div>   
                 <h1>{this.props.props1.userInfo.display_name}'s Room</h1>

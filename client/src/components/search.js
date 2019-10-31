@@ -8,14 +8,15 @@ class Search extends Component {
         this.state = {
             ...this.props,
             search: '',
-            searchResults: []
+            searchResults: [],
+            selectedResult: ''
         }
     }
 
     searchAll() {
         this.props.props2.props1.spotifyWebApi.searchTracks(this.state.search, ['track'])
         .then((response) => {
-        console.log('Search success!', response);
+        //console.log('Search success!', response);
         var json = response.tracks.items;
         var arr = [];
     
@@ -34,8 +35,8 @@ class Search extends Component {
         });
     }
 
-    addTrack() {
-        this.props.props1.spotifyWebApi.addTracksToPlaylist(this.props.props1.userInfo.id,'7Dcs93HOnJYPL6fJc9yqW2', ["spotify:track:4iV5W9uYEdYUVa79Axb7Rh"])
+    addTrack(id) {
+        this.props.props1.spotifyWebApi.addTracksToPlaylist(this.props.props1.userInfo.id,this.props.props2.props1.sele, ["spotify:track:" + id])
         .then(function(data) {
           console.log('Added tracks to playlist!');
         }, function(err) {
@@ -47,6 +48,10 @@ class Search extends Component {
         this.setState({search: event.target.value});
       }
 
+    handleSearchChange(event) {
+        this.setState({selectedResult: event.target.value});
+    }
+
     _renderSubComp() {
         switch(this.state.render){
             case 'search': return <div>this is the search room</div>
@@ -57,16 +62,26 @@ class Search extends Component {
                         Search:
                         <input type="text" value={this.state.search} onChange={this.handleChange.bind(this)} />
                         </label>
-                        <input type="submit" value="Submit" />
                     </form>
 
                     <button onClick={() => this.searchAll()}>
                         Search All
                     </button>
+                    <div>
+                        <label>Choose Track: <br/>
+                            <ul id="tracks">{
+                                this.state.searchResults.map(this.MakeItem)}
+                            </ul>
+                        </label>
+                    </div>
                 </div>
             );
         }
     }
+
+    MakeItem = function(X, i) {
+        return <option key={i}>{X.name + '(' + <a href="#" onClick={addTrack(X.id)}>+</a> + ')'}</option>;
+      };
 
     render() {
         return (

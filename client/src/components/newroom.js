@@ -128,7 +128,7 @@ class NewRoom extends Component {
  
     _renderSubComp(){
         switch(this.state.render){
-            case 'next': return <HostRoom props1={this.props} selectedDevice={this.state.selectedDevice} 
+            case 'next': return <HostRoom props1={this.props} selectedPlaylistID={this.state.selectedPlaylistID} selectedDevice={this.state.selectedDevice} 
             selectedPlaylist={this.state.selectedPlaylist} roomTracks={this.state.roomTracks}/>
  
             default: return (
