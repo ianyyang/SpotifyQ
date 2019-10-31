@@ -38,15 +38,13 @@ class JoinRoom extends Component {
                 <div class="JoinRoom">
                     <form>
                         <label>
-                            Name:
-                            <input type="text" onChange={this.handleChangeName.bind(this)} />
+                            Name: <input type="text" onChange={this.handleChangeName.bind(this)} />
                         </label>
                     </form>
 
                     <form>
                         <label>
-                            Access Code:
-                            <input type="text" onChange={this.handleChangeAccessCode.bind(this)} />
+                            Access Code: <input type="text" onChange={this.handleChangeAccessCode.bind(this)} />
                         </label>
                     </form>
 

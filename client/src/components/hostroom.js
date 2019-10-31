@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import Search from './search'
 import '../App.css';
 
 class HostRoom extends Component {
@@ -12,7 +13,6 @@ class HostRoom extends Component {
             },
             roomTracks: []
         }
-
     }
 
     getNowPlaying(){
@@ -51,8 +51,8 @@ class HostRoom extends Component {
         });
       }*/
 
-    test(){
-        console.log(this.props);
+    search(){
+        this.setState({render:'search'});
     }
 
     handleClick(compName, e){
@@ -62,6 +62,7 @@ class HostRoom extends Component {
     _renderSubComp(){
         switch(this.state.render){
             case 'new': return <div>this is the host room</div>
+            case 'search': return <Search props2={this.props}/>
             default: return ( 
             <div>   
                 <h1>{this.props.props1.userInfo.display_name}'s Room</h1>
@@ -84,7 +85,7 @@ class HostRoom extends Component {
                             :this.props.roomTracks.map(this.MakeItem)}
                         </ul>
                     
-                    <button id="right" onClick={() => this.test()}>
+                    <button id="right" onClick={() => this.search()}>
                         Add
                     </button>
                     <button>

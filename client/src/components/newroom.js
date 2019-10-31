@@ -9,6 +9,7 @@ class NewRoom extends Component {
             ...this.props,
             newPlaylist:'New Playlist',
             selectedPlaylist: '',
+            selectedPlaylistID: '',
             selectedDevice: '',
             roomTracks: []
         };
@@ -63,7 +64,8 @@ class NewRoom extends Component {
 
         for (playlist of this.props.playlists){
             if (playlist.name === this.state.selectedPlaylist){
-                id = playlist.id;
+              this.setState({selectedPlaylistID: id});
+              id = playlist.id;
             }
         }
         
