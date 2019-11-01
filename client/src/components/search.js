@@ -80,7 +80,7 @@ class Search extends Component {
     }
 
     MakeItem = function(X, i) {
-        return <option key={i}>{X.name + '(' + <a href="#" onClick={addTrack(X.id)}>+</a> + ')'}</option>;
+        return <option key={i}>{X.name + '(' + <a href="#" onClick="{this.addTrack.bind(this, X.id)}"> + </a> + ')'}</option>;
       };
 
     render() {
