@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import Search from './search'
+import Home from './home'
+
 import '../App.css';
 
 class HostRoom extends Component {
@@ -16,7 +18,7 @@ class HostRoom extends Component {
     }
 
     getNowPlaying(){
-        this.props.props1.spotifyWebApi.getMyCurrentPlaybackState()
+        this.props.home.spotifyWebApi.getMyCurrentPlaybackState()
         .then((response) => {
           console.log('Now playing successfully captured!', response);
     
@@ -54,6 +56,9 @@ class HostRoom extends Component {
     search(){
         this.setState({render:'search'});
     }
+    end(){
+        this.setState({render:'end'});
+    }
 
     handleClick(compName, e){
         console.log(compName);
@@ -61,14 +66,14 @@ class HostRoom extends Component {
     }
     _renderSubComp(){
         switch(this.state.render){
-            case 'new': return <div>this is the host room</div>
-            case 'search': return <Search props2={this.props} selectedPlaylistID={this.props.selectedPlaylistID}/>
+            case 'search': return <Search {...this.props}/>
+            case 'end': return <Home/>
             default: return ( 
             <div>   
-                <h1>{this.props.props1.userInfo.display_name}'s Room</h1>
+                <h1>{this.props.home.userInfo.display_name}'s Room</h1>
                 <label>Access Code: 1234</label> <br/>
-                <label>Selected Playlist: {this.props.selectedPlaylist}</label> <br/>
-                <label>Selected Device: {this.props.selectedDevice}</label> 
+                <label>Selected Playlist: {this.props.newroom.selectedPlaylist}</label> <br/>
+                <label>Selected Device: {this.props.newroom.selectedDevice}</label> 
 
                 <div> Now Playing: {this.state.nowPlaying.name}</div><div>
                     <img src={this.state.nowPlaying.image } style={{width:100}}/>
@@ -80,9 +85,9 @@ class HostRoom extends Component {
                 <div>
                     <h2>Room Queue:<br/></h2>
                         
-                        <ul id="list_1">{
-                            this.props.roomTracks.length === 0 ? "Its empty... Add some tracks!"
-                            :this.props.roomTracks.map(this.MakeItem)}
+                        <ul className="list_1">{
+                            this.props.newroom.roomTracks.length === 0 ? "Its empty... Add some tracks!"
+                            :this.props.newroom.roomTracks.map(this.MakeItem)}
                         </ul>
                     
                     <button id="right" onClick={() => this.search()}>
@@ -91,7 +96,7 @@ class HostRoom extends Component {
                     <button>
                         Play/Pause
                     </button>
-                    <button>
+                    <button onClick={() => this.end()}>
                         End Room
                     </button>
                 </div>

@@ -11,6 +11,7 @@ class NewRoom extends Component {
             selectedPlaylist: '',
             selectedPlaylistID: '',
             selectedDevice: '',
+            selectedDeviceID: '',
             roomTracks: []
         };
       }
@@ -30,7 +31,7 @@ class NewRoom extends Component {
     }
  
     getUserPlaylists(){
-        this.state.spotifyWebApi.getUserPlaylists()
+        this.props.spotifyWebApi.getUserPlaylists()
         .then((response) => {
           console.log('User playlists successfully captured!', response);
          
@@ -58,14 +59,13 @@ class NewRoom extends Component {
         window.location.reload();
     }
 
-    getPlaylistTracks(){
-        var id = '';
-        var playlist;
+    getPlaylistTracks(id){
+        var playlists = this.props.playlists;
 
-        for (playlist of this.props.playlists){
-            if (playlist.name === this.state.selectedPlaylist){
-              this.setState({selectedPlaylistID: id});
-              id = playlist.id;
+        for (var i = 0; i < playlists.length; i++){
+            if (playlists[i].name === this.state.selectedPlaylist){
+                id = playlists[i].id;
+                this.setState({selectedPlaylistID: id});
             }
         }
         
@@ -98,16 +98,34 @@ class NewRoom extends Component {
     }
    
     handleClick(compName, e){
+        var playlist_id;
 
         if (compName === 'next'){
+            
+            // Handle validation for first value selections of dropdowns.
             if (this.state.selectedDevice === ''){
                 this.setState({selectedDevice: this.props.devices[0].name});
+                this.setState({selectedDeviceID: this.props.devices[0].id});
             }
             if (this.state.selectedPlaylist === ''){
                 this.setState({selectedPlaylist: this.props.playlists[0].name});
+                this.setState({selectedPlaylistID: this.props.playlists[0].id});
+                playlist_id = this.props.playlists[0].id;
             }
 
-            this.getPlaylistTracks();
+            // Get Device ID
+            var device = '';
+            var d_id = '';
+
+            for (device of this.props.devices){
+                if (device.name === this.state.selectedDevice){
+                    d_id = device.id;
+                    this.setState({selectedDeviceID: d_id});
+                }
+            }
+
+            // Get room tracks, selected playlist name, id
+            this.getPlaylistTracks(playlist_id);
         }
         
         this.setState({render:compName});        
@@ -128,8 +146,7 @@ class NewRoom extends Component {
  
     _renderSubComp(){
         switch(this.state.render){
-            case 'next': return <HostRoom props1={this.props} selectedPlaylistID={this.state.selectedPlaylistID} selectedDevice={this.state.selectedDevice} 
-            selectedPlaylist={this.state.selectedPlaylist} roomTracks={this.state.roomTracks}/>
+            case 'next': return <HostRoom home={this.props} newroom={this.state}/>
  
             default: return (
             <div>

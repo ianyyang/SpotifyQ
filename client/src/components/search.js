@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
  
 import HostRoom from './hostroom'
+import List from 'react-list-select'
 
 class Search extends Component {
     constructor(){
@@ -9,12 +10,12 @@ class Search extends Component {
             ...this.props,
             search: '',
             searchResults: [],
-            selectedResult: ''
+            selectedResults: []
         }
     }
 
     searchAll() {
-        this.props.props2.props1.spotifyWebApi.searchTracks(this.state.search, ['track'])
+        this.props.home.spotifyWebApi.searchTracks(this.state.search, ['track'])
         .then((response) => {
         //console.log('Search success!', response);
         var json = response.tracks.items;
@@ -36,7 +37,7 @@ class Search extends Component {
     }
 
     addTrack(id) {
-        this.props.props1.spotifyWebApi.addTracksToPlaylist(this.props.props1.userInfo.id,this.props.props2.props1.sele, ["spotify:track:" + id])
+        this.props.home.spotifyWebApi.addTracksToPlaylist(this.props.home.userInfo.id,this.props.newroom.selectedPlaylistID, ["spotify:track:" + id])
         .then(function(data) {
           console.log('Added tracks to playlist!');
         }, function(err) {
@@ -46,15 +47,57 @@ class Search extends Component {
 
     handleChange(event) {
         this.setState({search: event.target.value});
-      }
+    }
 
-    handleSearchChange(event) {
-        this.setState({selectedResult: event.target.value});
+    handleSelectChange(selected) {
+
+        // If clicked option already exists, remove it to reflect a deselect.
+        var appendSelected = this.state.selectedResults;
+        var check = 1;
+        for( var i = 0; i < appendSelected.length; i++){ 
+            if (appendSelected[i] === selected[0]){
+                appendSelected.splice(i, 1); 
+                i--;
+                check = 0;
+            }
+        }
+        // Otherwise add the selection.
+        if (check > 0){
+            appendSelected.push(selected[0]);
+        }
+
+        this.setState({selectedResults: appendSelected});
+    }
+
+    addToRoom(){
+        var tracks = [];
+
+        // Build tracklist based on selection indicies.
+        for (var i = 0; i < this.state.selectedResults.length; i++){
+            tracks.push(this.state.searchResults[this.state.selectedResults[i]]);
+        }
+
+        // make possibly multiple API call for each selected track.
+        for( var i = 0; i < tracks.length; i++){ 
+            this.addTrack(tracks[i].id);
+
+            this.props.newroom.roomTracks.push({
+                name: tracks[i].name,
+                id: tracks[i].id
+            })
+        }
+
+        this.setState({render:'next'});        
+    }
+
+    back(){
+        this.setState({render:'back'});        
     }
 
     _renderSubComp() {
         switch(this.state.render){
-            case 'search': return <div>this is the search room</div>
+            case 'next': return <HostRoom {...this.props}/>
+            case 'back': return <HostRoom {...this.props}/>
             default: return (
                 <div>
                     <form>
@@ -67,20 +110,32 @@ class Search extends Component {
                     <button onClick={() => this.searchAll()}>
                         Search All
                     </button>
+                    
                     <div>
-                        <label>Choose Track: <br/>
-                            <ul id="tracks">{
-                                this.state.searchResults.map(this.MakeItem)}
-                            </ul>
-                        </label>
+                        <h1>Search Results</h1>
                     </div>
+                    <List className="list_1"
+                        items={this.state.searchResults.map(this.MakeItem)}
+                        selected={[]}
+                        disabled={[]}
+                        multiple={true}
+                        onChange={(selected: number) => { this.handleSelectChange(selected) }}
+                    />
+                    <button onClick={() => this.back()}>&#8592; Back</button>
+
+                    <button onClick={() => this.addToRoom()}>Add to Room &#8594;</button>
+
                 </div>
             );
         }
     }
 
     MakeItem = function(X, i) {
-        return <option key={i}>{X.name + '(' + <a href="#" onClick="{this.addTrack.bind(this, X.id)}"> + </a> + ')'}</option>;
+        return (
+        <div>
+            <option key={i}>{X.name}</option>
+        </div>
+        );
       };
 
     render() {

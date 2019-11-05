@@ -39,8 +39,10 @@ div, button {
 #right{
     padding: 2px 22px;
 }
-#list_1 {
+.list_1 {
     list-style: none;
+    list-style-type:none;
     margin: 0px;
     padding: 0px;
 }
+
