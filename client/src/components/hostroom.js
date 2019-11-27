@@ -13,7 +13,8 @@ class HostRoom extends Component {
                 name: '', 
                 image: '',
             },
-            roomTracks: []
+            roomTracks: [],
+            playing: 0
         }
     }
 
@@ -24,7 +25,7 @@ class HostRoom extends Component {
     
           this.setState({
             nowPlaying: {
-              name:response.item.name,
+              name: response.item.name,
               image: response.item.album.images[0].url
             }
           })
@@ -33,25 +34,36 @@ class HostRoom extends Component {
         });
       }
 
-      /*resumePlayback(){
+    // resumePlayback() and pausePlayback() currently not working
+    // index = takes in the index of the current device, to be used to determine current device ID from this.state.devices[index].id
+    // document.getElementById('devices') returning null, so cannot collect the .selectedIndex
+    resumePlayback(){
         var index = document.getElementById('devices').selectedIndex;
-        spotifyWebApi.play({device: this.state.devices[index].id})
+        this.props.home.spotifyWebApi.play({device: this.state.devices[index].id})
         .then(function(data) {
-          console.log('Playback resumed!', data);
+            console.log('Playback resumed!', data);
         }, function(err) {
-          console.error('Something went wrong!', err);
+            console.error('Something went wrong!', err);
         })
-      }
-    
-      pausePlayback() {
+    }
+
+    pausePlayback() {
         var index = document.getElementById('devices').selectedIndex;
-        spotifyWebApi.pause({device: this.state.devices[index].id})
+        this.props.home.spotifyWebApi.pause({device: this.state.devices[index].id})
         .then(function(data) {
-          console.log('Playback paused!');
+            console.log('Playback paused!');
         }, function(err) {
-          console.error('Something went wrong!', err);
+            console.error('Something went wrong!', err);
         });
-      }*/
+    }
+
+    resumePausePlayback() {
+        if (this.state.playing == 0) {
+            this.resumePlayback()
+        } else {
+            this.pausePlayback()
+        }
+    }
 
     search(){
         this.setState({render:'search'});
@@ -64,6 +76,7 @@ class HostRoom extends Component {
         console.log(compName);
         this.setState({render:compName});        
     }
+
     _renderSubComp(){
         switch(this.state.render){
             case 'search': return <Search {...this.props}/>
@@ -93,7 +106,7 @@ class HostRoom extends Component {
                     <button id="right" onClick={() => this.search()}>
                         Add
                     </button>
-                    <button>
+                    <button onClick={() => this.resumePausePlayback()}>
                         Play/Pause
                     </button>
                     <button onClick={() => this.end()}>
