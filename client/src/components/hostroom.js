@@ -22,13 +22,16 @@ class HostRoom extends Component {
         this.props.home.spotifyWebApi.getMyCurrentPlaybackState()
         .then((response) => {
           console.log('Now playing successfully captured!', response);
-    
-          this.setState({
-            nowPlaying: {
-              name: response.item.name,
-              image: response.item.album.images[0].url
-            }
-          })
+
+          if (response) {
+            this.setState({
+                nowPlaying: {
+                  name: response.item.name,
+                  image: response.item.album.images[0].url
+                }
+              })
+          }
+          
         }, function(err) {
           console.error('Something went wrong!', err);
         });
