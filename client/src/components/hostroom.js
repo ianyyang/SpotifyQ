@@ -88,9 +88,6 @@ class HostRoom extends Component {
                 <div> Now Playing: {this.state.nowPlaying.name}</div><div>
                     <img src={this.state.nowPlaying.image } style={{width:100}}/>
                 </div>
-                <button onClick={() => this.getNowPlaying()}>
-                    Check Now Playing
-                </button>
 
                 <div>
                     <h2>Room Queue:<br/></h2>
@@ -123,6 +120,7 @@ class HostRoom extends Component {
       return (
         <div className="HostRoom">        
           {this._renderSubComp()}
+          {this.getNowPlaying()}
         </div>      
       );
     }
