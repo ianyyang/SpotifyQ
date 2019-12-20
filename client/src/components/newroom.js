@@ -19,6 +19,7 @@ class NewRoom extends Component {
       }
        
     postNewPlaylist(){
+
         this.props.spotifyWebApi.createPlaylist(this.props.userInfo.id, {'name': this.state.newPlaylist})
         .then((response) => {
             //alert('New playlist created: ', response.name);
@@ -26,11 +27,16 @@ class NewRoom extends Component {
                 name: response.name,
                 id: response.id
               });
+
+              this.setState({selectedPlaylist: response.name});
+              this.setState({selectedPlaylistID: response.id});
+
         }, function(err) {
             console.error('Something went wrong!', err);
         })
 
-        // Need to make it follow through to the next window using the newly created playlist
+        // Need to make it follow through to the next window using the newly created playlist       
+        this.handleClick('next', this)
     }
  
     getUserPlaylists(){
