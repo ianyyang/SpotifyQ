@@ -14,9 +14,8 @@ class NewRoom extends Component {
             selectedDevice: '',
             selectedDeviceID: '',
             roomTracks: [],
-            renderPlaylist: 0,
             render: 'roomPlaylist'
-        };
+        }
       }
        
     postNewPlaylist(){
@@ -96,37 +95,40 @@ class NewRoom extends Component {
     }
    
     handleClick(compName, e){
-        var playlist_id;
-
-        if (compName === 'next'){
-            
-            // Handle validation for first value selections of dropdowns.
-            if (this.state.selectedDevice === ''){
-                this.setState({selectedDevice: this.props.devices[0].name});
-                this.setState({selectedDeviceID: this.props.devices[0].id});
-            }
-            if (this.state.selectedPlaylist === ''){
-                this.setState({selectedPlaylist: this.props.playlists[0].name});
-                this.setState({selectedPlaylistID: this.props.playlists[0].id});
-                playlist_id = this.props.playlists[0].id;
-            }
-
-            // Get Device ID
-            var device = '';
-            var d_id = '';
-
-            for (device of this.props.devices){
-                if (device.name === this.state.selectedDevice){
-                    d_id = device.id;
-                    this.setState({selectedDeviceID: d_id});
+        if (this.props.devices.length == 0) {
+            this.setState({render: 'emptyDevices'})
+        } else {
+            var playlist_id;
+            if (compName === 'next'){
+                
+                // Handle validation for first value selections of dropdowns.
+                if (this.state.selectedDevice === ''){
+                    this.setState({selectedDevice: this.props.devices[0].name});
+                    this.setState({selectedDeviceID: this.props.devices[0].id});
                 }
-            }
+                if (this.state.selectedPlaylist === ''){
+                    this.setState({selectedPlaylist: this.props.playlists[0].name});
+                    this.setState({selectedPlaylistID: this.props.playlists[0].id});
+                    playlist_id = this.props.playlists[0].id;
+                }
 
-            // Get room tracks, selected playlist name, id
-            this.getPlaylistTracks(playlist_id);
+                // Get Device ID
+                var device = '';
+                var d_id = '';
+
+                for (device of this.props.devices){
+                    if (device.name === this.state.selectedDevice){
+                        d_id = device.id;
+                        this.setState({selectedDeviceID: d_id});
+                    }
+                }
+
+                // Get room tracks, selected playlist name, id
+                this.getPlaylistTracks(playlist_id);
+            }
+            
+            this.setState({render:compName});
         }
-        
-        this.setState({render:compName});        
     }
  
     handleDeviceChange(event) {
@@ -145,6 +147,16 @@ class NewRoom extends Component {
     _renderSubComp(){
         switch(this.state.render){
             case 'next': return <HostRoom home={this.props} newroom={this.state}/>
+            case 'emptyDevices': return (
+                <div>
+                    <label>
+                        It looks like you have no Spotify applications open on any devices.<br/>
+                        Would you like to open the Spotify web app <a href = "spotify:">here?</a><br/>
+                        Or open the Spotify web player <a href = "https://open.spotify.com/" target="_blank">here?</a><br/>
+                    </label>
+                    <button onClick={() => window.location.reload()}>Try Again</button>
+                </div>
+            )
             case 'roomPlaylist': return (
                 <div>
                     <h1>New Room Hosted By: {this.props.userInfo.display_name}</h1>

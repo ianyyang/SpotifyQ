@@ -18,7 +18,7 @@ class HostRoom extends Component {
         }
     }
 
-    getNowPlaying(){
+    getNowPlaying() {
         this.props.home.spotifyWebApi.getMyCurrentPlaybackState()
         .then((response) => {
           console.log('Now playing successfully captured!', response);
@@ -32,9 +32,9 @@ class HostRoom extends Component {
         }, function(err) {
           console.error('Something went wrong!', err);
         });
-      }
+    }
 
-    resumePlayback(){
+    resumePlayback() {
         this.props.home.spotifyWebApi.play({device_id: this.props.newroom.selectedDeviceID})
         .then(function(data) {
             console.log('Playback resumed!', data);
@@ -81,7 +81,6 @@ class HostRoom extends Component {
             default: return ( 
             <div>   
                 <h1>{this.props.home.userInfo.display_name}'s Room</h1>
-                <label>Access Code: 1234</label> <br/>
                 <label>Selected Playlist: {this.props.newroom.selectedPlaylist}</label> <br/>
                 <label>Selected Device: {this.props.newroom.selectedDevice}</label> 
 

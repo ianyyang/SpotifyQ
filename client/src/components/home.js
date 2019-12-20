@@ -123,7 +123,7 @@ class Home extends Component {
     _renderSubComp(){
         switch(this.state.render){
             case 'login': window.location.assign('http://localhost:8888/login')
-            case 'new': return <NewRoom {...this.state}/>              
+            case 'new': return <NewRoom {...this.state}/>
             default: return(
                 <div className="Home">        
                     <button onClick={this.handleClick.bind(this, 'login')}>New Room</button>
