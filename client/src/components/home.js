@@ -1,8 +1,5 @@
 import React, { Component } from 'react';
 
-// Components
-import JoinRoom from './joinroom'
-
 //import AppFunc from '../App-function'
 import NewRoom from './newroom'
 import Spotify from 'spotify-web-api-js';
@@ -127,11 +124,9 @@ class Home extends Component {
         switch(this.state.render){
             case 'login': window.location.assign('http://localhost:8888/login')
             case 'new': return <NewRoom {...this.state}/>              
-            case 'join': return <JoinRoom/>
             default: return(
                 <div className="Home">        
                     <button onClick={this.handleClick.bind(this, 'login')}>New Room</button>
-                    <button onClick={this.handleClick.bind(this, 'join')}>Join Room</button>
                 </div>
           );
         }

@@ -34,7 +34,6 @@ class HostRoom extends Component {
         });
       }
 
-    // Resume and pause playback doesn't work if there is only one device... but it works if there's two
     resumePlayback(){
         this.props.home.spotifyWebApi.play({device_id: this.props.newroom.selectedDeviceID})
         .then(function(data) {
@@ -56,8 +55,10 @@ class HostRoom extends Component {
     resumePausePlayback() {
         if (this.state.playing == 0) {
             this.resumePlayback()
+            this.setState({playing: 1})
         } else {
             this.pausePlayback()
+            this.setState({playing: 0})
         }
     }
 

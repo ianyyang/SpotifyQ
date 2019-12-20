@@ -5,6 +5,7 @@ import HostRoom from './hostroom'
 class NewRoom extends Component {
     constructor(props) {
         super(props);
+        
         this.state = {
             ...this.props,
             newPlaylist:'New Playlist',
@@ -12,10 +13,11 @@ class NewRoom extends Component {
             selectedPlaylistID: '',
             selectedDevice: '',
             selectedDeviceID: '',
-            roomTracks: []
+            roomTracks: [],
+            renderPlaylist: 0,
+            render: 'roomPlaylist'
         };
       }
-   
        
     postNewPlaylist(){
         this.props.spotifyWebApi.createPlaylist(this.props.userInfo.id, {'name': this.state.newPlaylist})
@@ -28,6 +30,8 @@ class NewRoom extends Component {
         }, function(err) {
             console.error('Something went wrong!', err);
         })
+
+        // Need to make it follow through to the next window using the newly created playlist
     }
  
     getUserPlaylists(){
@@ -52,12 +56,6 @@ class NewRoom extends Component {
           });
         })
       }
- 
-    postAndGet(){
-        this.postNewPlaylist();
-        //this.getUserPlaylists();
-        window.location.reload();
-    }
 
     getPlaylistTracks(id){
         var playlists = this.props.playlists;
@@ -147,32 +145,46 @@ class NewRoom extends Component {
     _renderSubComp(){
         switch(this.state.render){
             case 'next': return <HostRoom home={this.props} newroom={this.state}/>
- 
-            default: return (
-            <div>
-                <h1>New Room Hosted By: {this.props.userInfo.display_name}</h1>
-                <label>Choose Device: <br/>
-                <select id="devices" onChange={this.handleDeviceChange.bind(this)}>{this.props.devices.map(this.MakeItem)}</select>
-                </label>
- 
+            case 'roomPlaylist': return (
                 <div>
-                    <label>
-                    <br/> Create New Playlist: <br/>
-                    <input type="text" value={this.state.newPlaylist} onClick={this.handlePlaylistTextChange.bind(this)} onChange={this.handlePlaylistTextChange.bind(this)} />
+                    <h1>New Room Hosted By: {this.props.userInfo.display_name}</h1>
+                    <label>Choose Device: <br/>
+                        <select id="devices" onChange={this.handleDeviceChange.bind(this)}>{this.props.devices.map(this.MakeItem)}</select>
                     </label>
-                    <input onClick={() => this.postAndGet()} type="submit" value="Submit" />
+    
+                    <div>
+                        <label>Choose Room Playlist:<br/>
+                            <select id="playlists" onChange={this.handlePlaylistListChange.bind(this)}>{this.props.playlists.map(this.MakeItem)}</select>
+                        </label>
+                        <button onClick={() => this.handleClick('next', this)}>Next</button>
+                    </div>
+                    <button onClick={() => this.handleClick('newPlaylist', this)}>Make a new playlist instead?</button>
                 </div>
- 
+            )
+            case 'newPlaylist': return (
                 <div>
-                <label>Choose Room Playlist:<br/>
-                    <select id="playlists" onChange={this.handlePlaylistListChange.bind(this)}>{this.props.playlists.map(this.MakeItem)}</select>
-                </label>
+                    <h1>New Room Hosted By: {this.props.userInfo.display_name}</h1>
+                    <label>Choose Device: <br/>
+                        <select id="devices" onChange={this.handleDeviceChange.bind(this)}>{this.props.devices.map(this.MakeItem)}</select>
+                    </label>
+    
+                    <div>
+                        <label> Create New Playlist: <br/>
+                            <input type="text" value={this.state.newPlaylist} onClick={this.handlePlaylistTextChange.bind(this)} onChange={this.handlePlaylistTextChange.bind(this)} />
+                        </label>
+                        <button onClick={() => this.postNewPlaylist()}>Submit</button>
+                    </div>
+                    <button onClick={() => this.handleClick('roomPlaylist', this)}>Use an existing playlist instead?</button>
                 </div>
-               
-                <button onClick={() => this.handleClick('next', this)}>Next</button>
- 
-            </div>
-                );
+            )
+            default: return (
+                <div>
+                    <h1>New Room Hosted By: {this.props.userInfo.display_name}</h1>
+                    <label>Choose Device: <br/>
+                        <select id="devices" onChange={this.handleDeviceChange.bind(this)}>{this.props.devices.map(this.MakeItem)}</select>
+                    </label>
+                </div>
+            );
         }
     }
  
