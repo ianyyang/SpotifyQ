@@ -34,12 +34,9 @@ class HostRoom extends Component {
         });
       }
 
-    // resumePlayback() and pausePlayback() currently not working
-    // index = takes in the index of the current device, to be used to determine current device ID from this.state.devices[index].id
-    // document.getElementById('devices') returning null, so cannot collect the .selectedIndex
+    // Resume and pause playback doesn't work if there is only one device... but it works if there's two
     resumePlayback(){
-        var index = document.getElementById('devices').selectedIndex;
-        this.props.home.spotifyWebApi.play({device: this.state.devices[index].id})
+        this.props.home.spotifyWebApi.play({device_id: this.props.newroom.selectedDeviceID})
         .then(function(data) {
             console.log('Playback resumed!', data);
         }, function(err) {
@@ -48,8 +45,7 @@ class HostRoom extends Component {
     }
 
     pausePlayback() {
-        var index = document.getElementById('devices').selectedIndex;
-        this.props.home.spotifyWebApi.pause({device: this.state.devices[index].id})
+        this.props.home.spotifyWebApi.pause({device_id: this.props.newroom.selectedDeviceID})
         .then(function(data) {
             console.log('Playback paused!');
         }, function(err) {
