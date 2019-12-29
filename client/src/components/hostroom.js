@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import Search from './search'
+import EditRoom from './editroom'
 import Home from './home'
 
 import '../App.css';
@@ -66,11 +66,12 @@ class HostRoom extends Component {
         }
     }
 
-    search(){
-        this.setState({render:'search'});
-    }
     end(){
         this.setState({render:'end'});
+    }
+
+    edit(){
+        this.setState({render:'edit'});
     }
 
     oneLoad(){
@@ -87,7 +88,7 @@ class HostRoom extends Component {
 
     _renderSubComp(){
         switch(this.state.render){
-            case 'search': return <Search {...this.props}/>
+            case 'edit': return <EditRoom {...this.props}/>
             case 'end': return <Home/>
             default: return ( 
             <div>   
@@ -111,8 +112,8 @@ class HostRoom extends Component {
                             :this.props.newroom.roomTracks.map(this.MakeItem)}
                         </ul>
                     
-                    <button id="right" onClick={() => this.search()}>
-                        Add
+                    <button id="" onClick={() => this.edit()}>
+                        Edit Room
                     </button>
                     <button onClick={() => this.resumePausePlayback()}>
                         Play/Pause

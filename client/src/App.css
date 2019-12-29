@@ -37,8 +37,27 @@ div, button {
 }
 
 #right{
-    padding: 2px 22px;
+    padding: 2px 14px;
 }
+
+#r-shift{
+    position: absolute;
+    right: calc(50% - 160px);
+    text-align: center;
+}
+
+#l-shift{
+    position: absolute;
+    left: calc(50% - 120px);
+    text-align: center;
+}
+
+#centre{
+    position: absolute;
+    left: calc(50% - 40px);
+    text-align: center;
+}
+
 .list_1 {
     list-style: none;
     list-style-type:none;

@@ -14,6 +14,7 @@ class NewRoom extends Component {
             selectedDevice: '',
             selectedDeviceID: '',
             roomTracks: [],
+            newPlaylistCheck: false,
             render: 'roomPlaylist'
         }
       }
@@ -101,6 +102,10 @@ class NewRoom extends Component {
     }
    
     handleClick(compName, e){
+        if (compName === 'roomPlaylist'){
+            this.setState({newPlaylistCheck: true});
+        }
+
         if (this.props.devices.length == 0) {
             this.setState({render: 'emptyDevices'})
         } else {
@@ -112,7 +117,7 @@ class NewRoom extends Component {
                     this.setState({selectedDevice: this.props.devices[0].name});
                     this.setState({selectedDeviceID: this.props.devices[0].id});
                 }
-                if (this.state.selectedPlaylist === ''){
+                if (this.state.selectedPlaylist === '' || this.state.newPlaylistCheck === true){
                     this.setState({selectedPlaylist: this.props.playlists[0].name});
                     this.setState({selectedPlaylistID: this.props.playlists[0].id});
                     playlist_id = this.props.playlists[0].id;

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
  
 import HostRoom from './hostroom'
+import EditRoom from './editroom'
 import List from 'react-list-select'
 
 class Search extends Component {
@@ -50,7 +51,6 @@ class Search extends Component {
     }
 
     handleSelectChange(selected) {
-
         // If clicked option already exists, remove it to reflect a deselect.
         var appendSelected = this.state.selectedResults;
         var check = 1;
@@ -67,6 +67,7 @@ class Search extends Component {
         }
 
         this.setState({selectedResults: appendSelected});
+        console.log(this.state.selectedResults)
     }
 
     addToRoom(){
@@ -97,7 +98,7 @@ class Search extends Component {
     _renderSubComp() {
         switch(this.state.render){
             case 'next': return <HostRoom {...this.props}/>
-            case 'back': return <HostRoom {...this.props}/>
+            case 'back': return <EditRoom {...this.props}/>
             default: return (
                 <div>
                     <form>
