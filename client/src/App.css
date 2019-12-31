@@ -42,26 +42,80 @@ div, button {
 
 #r-shift{
     position: absolute;
-    right: calc(50% - 160px);
+    right: calc(50% - 195px);
     text-align: center;
 }
 
 #l-shift{
     position: absolute;
-    left: calc(50% - 120px);
+    left: calc(50% - 145px);
     text-align: center;
 }
 
 #centre{
     position: absolute;
-    left: calc(50% - 40px);
+    left: calc(50% - 45px);
     text-align: center;
 }
 
-.list_1 {
+.react-list-select {
     list-style: none;
     list-style-type:none;
     margin: 0px;
     padding: 0px;
+    background: #fafafa;
+	border: 1px solid #cacaca;
+	margin-right: 0.5em;
 }
 
+.react-list-select--item {
+	padding: 0.3em 0.6em;
+	cursor: pointer;
+	position: relative;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	-o-user-select: none;
+}
+
+.react-list-selected--item{
+    padding: 0.3em 0.6em;
+	cursor: pointer;
+	position: relative;
+    background: #d7ffda;
+    color: red;
+    font-style: italic
+}
+
+.react-list-add-selected--item{
+    padding: 0.3em 0.6em;
+	cursor: pointer;
+	position: relative;
+    background: #d7ffda;
+    color: green;
+    font-style: italic
+}
+
+.react-list-select--item:hover { background: #8ffa98;}
+
+.button_a {
+    color: white;
+    text-transform: uppercase;
+    text-decoration: none;
+    background: #434343;
+    padding: 10px;
+    border-radius: 5px;
+    border-color: #cacaca;
+    display: inline-block;
+    transition: all 0.4s ease 0s;
+}
+
+.button_a:hover {
+    background: #434343;
+    color: white;
+    letter-spacing: 1px;
+    -webkit-box-shadow: 0px 5px 40px -10px rgba(0,0,0,0.57);
+    -moz-box-shadow: 0px 5px 40px -10px rgba(0,0,0,0.57);
+    box-shadow: 5px 40px -10px rgba(0,0,0,0.57);
+    transition: all 0.4s ease 0s;
+}

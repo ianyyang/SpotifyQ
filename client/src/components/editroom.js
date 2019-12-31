@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import HostRoom from './hostroom'
 import Search from './search'
 import List from 'react-list-select'
+import ListItem from './../list-item'
 
 
 import '../App.css';
@@ -52,7 +53,6 @@ class EditRoom extends Component {
     }
 
     handleSelectChange(selected) {
-        console.log(this.state.selectedResults);
         // If clicked option already exists, remove it to reflect a deselect.
         var appendSelected = this.state.selectedResults;
         var check = 1;
@@ -61,11 +61,18 @@ class EditRoom extends Component {
                 appendSelected.splice(i, 1); 
                 i--;
                 check = 0;
+                var rem_element = document.getElementById(selected[0]);
+                rem_element.classList.add('react-list-select--item');
+                rem_element.classList.remove('react-list-selected--item');        
+
             }
         }
         // Otherwise add the selection.
         if (check > 0){
             appendSelected.push(selected[0]);
+            var element = document.getElementById(selected[0]);
+            element.classList.add('react-list-selected--item');
+            element.classList.remove('react-list-select--item');             
         }
 
         this.setState({selectedResults: appendSelected});
@@ -82,7 +89,7 @@ class EditRoom extends Component {
                 <div>
                     <h2>Edit Room Queue:<br/></h2>
                         
-                    <List className="list_1"
+                    <List className="react-list-select"
                         items={this.props.newroom.roomTracks.map(this.MakeItem)}
                         selected={[]}
                         disabled={[]}
@@ -91,13 +98,13 @@ class EditRoom extends Component {
                     />
 
                     <br/>                
-                    <button id="l-shift" onClick={() => this.back()}>
+                    <button className="button_a" id="l-shift" onClick={() => this.back()}>
                     &#8592; Back
                     </button> 
-                    <button id="centre" onClick={() => this.delete()}>
+                    <button className="button_a" id="centre" onClick={() => this.delete()}>
                         Delete
                     </button>
-                    <button id="r-shift" onClick={() => this.search()}>
+                    <button className="button_a" id="r-shift" onClick={() => this.search()}>
                         Find New Songs &#8594;
                     </button>
                     
@@ -108,7 +115,7 @@ class EditRoom extends Component {
     }
 
     MakeItem = function(X, i) {
-        return <li key={i}>{X.name}</li>;
+        return <li className="react-list-select--item" id={i} tabindex={i} key={i}>{X.name}</li>;
       };
 
     render() {

@@ -126,7 +126,7 @@ class Home extends Component {
             case 'new': return <NewRoom {...this.state}/>
             default: return(
                 <div className="Home">        
-                    <button onClick={this.handleClick.bind(this, 'login')}>New Room</button>
+                    <button className="button_a" onClick={this.handleClick.bind(this, 'login')}>New Room</button>
                 </div>
           );
         }

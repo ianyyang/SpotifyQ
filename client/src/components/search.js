@@ -59,11 +59,18 @@ class Search extends Component {
                 appendSelected.splice(i, 1); 
                 i--;
                 check = 0;
+
+                var add_element = document.getElementById(selected[0]);
+                add_element.classList.add('react-list-select--item');
+                add_element.classList.remove('react-list-add-selected--item');   
             }
         }
         // Otherwise add the selection.
         if (check > 0){
             appendSelected.push(selected[0]);
+            var element = document.getElementById(selected[0]);
+            element.classList.add('react-list-add-selected--item');
+            element.classList.remove('react-list-select--item'); 
         }
 
         this.setState({selectedResults: appendSelected});
@@ -106,25 +113,26 @@ class Search extends Component {
                         Search:
                         <input type="text" value={this.state.search} onChange={this.handleChange.bind(this)} />
                         </label>
+
+                    <button className="button_a" onClick={() => this.searchAll()}>
+                        Search
+                    </button>
                     </form>
 
-                    <button onClick={() => this.searchAll()}>
-                        Search All
-                    </button>
                     
                     <div>
                         <h1>Search Results</h1>
                     </div>
-                    <List className="list_1"
+                    <List className="react-list-select"
                         items={this.state.searchResults.map(this.MakeItem)}
                         selected={[]}
                         disabled={[]}
                         multiple={true}
                         onChange={(selected: number) => { this.handleSelectChange(selected) }}
                     />
-                    <button onClick={() => this.back()}>&#8592; Back</button>
+                    <button className="button_a" onClick={() => this.back()}>&#8592; Back</button>
 
-                    <button onClick={() => this.addToRoom()}>Add to Room &#8594;</button>
+                    <button className="button_a" onClick={() => this.addToRoom()}>Add to Room &#8594;</button>
 
                 </div>
             );
@@ -134,7 +142,7 @@ class Search extends Component {
     MakeItem = function(X, i) {
         return (
         <div>
-            <option key={i}>{X.name}</option>
+            <option id={i} key={i}>{X.name}</option>
         </div>
         );
       };

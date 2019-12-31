@@ -170,7 +170,7 @@ class NewRoom extends Component {
             )
             case 'roomPlaylist': return (
                 <div>
-                    <h1>New Room Hosted By: {this.props.userInfo.display_name}</h1>
+                    <h1>NEW ROOM HOSTED BY: {this.props.userInfo.display_name.toUpperCase()}</h1>
                     <label>Choose Device: <br/>
                         <select id="devices" onChange={this.handleDeviceChange.bind(this)}>{this.props.devices.map(this.MakeItem)}</select>
                     </label>
@@ -179,9 +179,9 @@ class NewRoom extends Component {
                         <label>Choose Room Playlist:<br/>
                             <select id="playlists" onChange={this.handlePlaylistListChange.bind(this)}>{this.props.playlists.map(this.MakeItem)}</select>
                         </label>
-                        <button onClick={() => this.handleClick('next', this)}>Next</button>
+                        <button className="button_a" onClick={() => this.handleClick('next', this)}>Next</button>
                     </div>
-                    <button onClick={() => this.handleClick('newPlaylist', this)}>Make a new playlist instead?</button>
+                    <button className="button_a" onClick={() => this.handleClick('newPlaylist', this)}>Make a new playlist instead?</button>
                 </div>
             )
             case 'newPlaylist': return (
@@ -195,9 +195,9 @@ class NewRoom extends Component {
                         <label> Create New Playlist: <br/>
                             <input type="text" value={this.state.newPlaylist} onClick={this.handlePlaylistTextChange.bind(this)} onChange={this.handlePlaylistTextChange.bind(this)} />
                         </label>
-                        <button onClick={() => this.postNewPlaylist()}>Submit</button>
+                        <button className="button_a" onClick={() => this.postNewPlaylist()}>Submit</button>
                     </div>
-                    <button onClick={() => this.handleClick('roomPlaylist', this)}>Use an existing playlist instead?</button>
+                    <button className="button_a" onClick={() => this.handleClick('roomPlaylist', this)}>Use an existing playlist instead?</button>
                 </div>
             )
             default: return (

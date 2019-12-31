@@ -92,33 +92,34 @@ class HostRoom extends Component {
             case 'end': return <Home/>
             default: return ( 
             <div>   
-                <h1>{this.props.home.userInfo.display_name}'s Room</h1>
+                <h1>{this.props.home.userInfo.display_name.toUpperCase()}'s ROOM</h1>
                 <label>Selected Playlist: {this.props.newroom.selectedPlaylist}</label> <br/>
                 <label>Selected Device: {this.props.newroom.selectedDevice}</label> 
 
-                <div> Now Playing: {this.state.nowPlaying.name}</div><div>
+                <div> Now Playing: {this.state.nowPlaying.name}</div>
+                <div>
                     <img src={this.state.nowPlaying.image } style={{width:100}}/>
                 </div>
 
-                <button onClick={() => this.getNowPlaying()}>
+                <button className="button_a" onClick={() => this.getNowPlaying()}>
                         Check Now Playing
                 </button>
 
                 <div>
                     <h2>Room Queue:<br/></h2>
                         
-                        <ul className="list_1">{
+                        <ul className="react-list-select">{
                             this.props.newroom.roomTracks.length === 0 ? "Its empty... Add some tracks!"
                             :this.props.newroom.roomTracks.map(this.MakeItem)}
                         </ul>
                     
-                    <button id="" onClick={() => this.edit()}>
+                    <button className="button_a" onClick={() => this.edit()}>
                         Edit Room
                     </button>
-                    <button onClick={() => this.resumePausePlayback()}>
+                    <button className="button_a" onClick={() => this.resumePausePlayback()}>
                         Play/Pause
                     </button>
-                    <button onClick={() => this.end()}>
+                    <button className="button_a" onClick={() => this.end()}>
                         End Room
                     </button>
                 </div>
