@@ -115,7 +115,7 @@ class EditRoom extends Component {
     }
 
     MakeItem = function(X, i) {
-        return <li className="react-list-select--item" id={i} tabindex={i} key={i}>{X.name}</li>;
+        return <li className="react-list-select--item" id={i} tabindex={i} key={i}>{X.name + " - " + X.artists}</li>;
       };
 
     render() {

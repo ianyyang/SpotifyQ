@@ -23,8 +23,14 @@ class Search extends Component {
         var arr = [];
     
         Object.keys(json).forEach(function(key) {
+            var artists = '';
+                for (var i = 0; i < json[key].artists.length; i++){
+                    artists += json[key].artists[i].name + ", ";
+                }
+
             arr.push({
                 name: json[key].name,
+                artists: artists.slice(0, -2),
                 id: json[key].id
             })
         });
@@ -110,7 +116,7 @@ class Search extends Component {
                 <div>
                     <form>
                         <label>
-                        Search:
+                        
                         <input type="text" value={this.state.search} onChange={this.handleChange.bind(this)} />
                         </label>
 
@@ -142,7 +148,7 @@ class Search extends Component {
     MakeItem = function(X, i) {
         return (
         <div>
-            <option id={i} key={i}>{X.name}</option>
+            <option id={i} key={i}>{X.name + " - " + X.artists}</option>
         </div>
         );
       };

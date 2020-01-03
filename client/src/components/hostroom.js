@@ -11,6 +11,7 @@ class HostRoom extends Component {
             ...this.props,
             nowPlaying: { 
                 name: '', 
+                artists: '',
                 image: '',
             },
             roomTracks: [],
@@ -24,10 +25,16 @@ class HostRoom extends Component {
         .then((response) => {
           console.log('Now playing successfully captured!', response);
 
+          var artists = '';
           if (response) {
+            
+            for (var i = 0; i < response.item.artists.length; i++){
+                artists += response.item.artists[i].name + ", ";
+            }
             this.setState({
                 nowPlaying: {
                   name: response.item.name,
+                  artists: artists.slice(0, -2),
                   image: response.item.album.images[0].url
                 }
               })
@@ -93,13 +100,13 @@ class HostRoom extends Component {
             default: return ( 
             <div>   
                 <h1>{this.props.home.userInfo.display_name.toUpperCase()}'s ROOM</h1>
-                <label>Selected Playlist: {this.props.newroom.selectedPlaylist}</label> <br/>
-                <label>Selected Device: {this.props.newroom.selectedDevice}</label> 
+                <label>Playlist: {this.props.newroom.selectedPlaylist}</label> <br/>
+                <label>Device: {this.props.newroom.selectedDevice}</label> 
 
-                <div> Now Playing: {this.state.nowPlaying.name}</div>
                 <div>
                     <img src={this.state.nowPlaying.image } style={{width:100}}/>
                 </div>
+                <div> {this.state.nowPlaying.name + " - " + this.state.nowPlaying.artists}</div>
 
                 <button className="button_a" onClick={() => this.getNowPlaying()}>
                         Check Now Playing
@@ -129,7 +136,7 @@ class HostRoom extends Component {
     }
 
     MakeItem = function(X, i) {
-        return <li key={i}>{X.name}</li>;
+        return <li key={i}>{X.name + " - " + X.artists}</li>;
       };
 
     render() {

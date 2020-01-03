@@ -85,8 +85,14 @@ class NewRoom extends Component {
               var arr = [];
 
               Object.keys(json).forEach(function(key) {
+                var artists = '';
+                for (var i = 0; i < json[key].track.artists.length; i++){
+                    artists += json[key].track.artists[i].name + ", ";
+                }
+
                 arr.push({
                     name: json[key].track.name,
+                    artists: artists.slice(0,-2),
                     id: json[key].track.id
                   })
               });
@@ -172,12 +178,12 @@ class NewRoom extends Component {
                 <div>
                     <h1>NEW ROOM HOSTED BY: {this.props.userInfo.display_name.toUpperCase()}</h1>
                     <label>Choose Device: <br/>
-                        <select id="devices" onChange={this.handleDeviceChange.bind(this)}>{this.props.devices.map(this.MakeItem)}</select>
+                        <select className="select-a-styled" id="devices" onChange={this.handleDeviceChange.bind(this)}>{this.props.devices.map(this.MakeItem)}</select>
                     </label>
     
                     <div>
                         <label>Choose Room Playlist:<br/>
-                            <select id="playlists" onChange={this.handlePlaylistListChange.bind(this)}>{this.props.playlists.map(this.MakeItem)}</select>
+                            <select className="select-a-styled" id="playlists" onChange={this.handlePlaylistListChange.bind(this)}>{this.props.playlists.map(this.MakeItem)}</select>
                         </label>
                         <button className="button_a" onClick={() => this.handleClick('next', this)}>Next</button>
                     </div>
@@ -186,9 +192,9 @@ class NewRoom extends Component {
             )
             case 'newPlaylist': return (
                 <div>
-                    <h1>New Room Hosted By: {this.props.userInfo.display_name}</h1>
+                    <h1>NEW ROOM HOSTED BY: {this.props.userInfo.display_name.toUpperCase()}</h1>
                     <label>Choose Device: <br/>
-                        <select id="devices" onChange={this.handleDeviceChange.bind(this)}>{this.props.devices.map(this.MakeItem)}</select>
+                        <select className="select-a-styled" id="devices" onChange={this.handleDeviceChange.bind(this)}>{this.props.devices.map(this.MakeItem)}</select>
                     </label>
     
                     <div>
@@ -204,7 +210,7 @@ class NewRoom extends Component {
                 <div>
                     <h1>New Room Hosted By: {this.props.userInfo.display_name}</h1>
                     <label>Choose Device: <br/>
-                        <select id="devices" onChange={this.handleDeviceChange.bind(this)}>{this.props.devices.map(this.MakeItem)}</select>
+                        <select className="select-a-styled" id="devices" onChange={this.handleDeviceChange.bind(this)}>{this.props.devices.map(this.MakeItem)}</select>
                     </label>
                 </div>
             );
