@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import EditRoom from './editroom'
-import Home from './home'
+import EndRoom from './endroom'
 
 import '../App.css';
 
@@ -9,6 +9,7 @@ class HostRoom extends Component {
         super();
         this.state = {
             ...this.props,
+            history: [],
             nowPlaying: { 
                 name: '', 
                 artists: '',
@@ -31,13 +32,20 @@ class HostRoom extends Component {
             for (var i = 0; i < response.item.artists.length; i++){
                 artists += response.item.artists[i].name + ", ";
             }
+
             this.setState({
                 nowPlaying: {
                   name: response.item.name,
                   artists: artists.slice(0, -2),
                   image: response.item.album.images[0].url
                 }
-              })
+            })
+
+            if (!this.state.history.includes(response.item.id)) {
+                this.setState({
+                    history: this.state.history.concat(response.item.id)
+                })
+            }
           }
           
         }, function(err) {
@@ -96,7 +104,7 @@ class HostRoom extends Component {
     _renderSubComp(){
         switch(this.state.render){
             case 'edit': return <EditRoom {...this.props}/>
-            case 'end': return <Home/>
+            case 'end': return <EndRoom home={this.props} newroom={this.state}/>
             default: return ( 
             <div>   
                 <h1>{this.props.home.userInfo.display_name.toUpperCase()}'s ROOM</h1>
@@ -114,7 +122,6 @@ class HostRoom extends Component {
 
                 <div>
                     <h2>Room Queue:<br/></h2>
-                        
                         <ul className="react-list-select">{
                             this.props.newroom.roomTracks.length === 0 ? "Its empty... Add some tracks!"
                             :this.props.newroom.roomTracks.map(this.MakeItem)}
@@ -143,6 +150,7 @@ class HostRoom extends Component {
       return (
         <div className="HostRoom">        
           {this._renderSubComp()}
+          {this.getNowPlaying()}
           {this.oneLoad()}
         </div>      
       );

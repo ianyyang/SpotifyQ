@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import HostRoom from './hostroom'
 import Search from './search'
 import List from 'react-list-select'
-import ListItem from './../list-item'
 
 
 import '../App.css';

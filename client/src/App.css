@@ -42,13 +42,13 @@ div, button {
 
 #r-shift{
     position: absolute;
-    right: calc(50% - 195px);
+    right: calc(50% - 45px - 190px);
     text-align: center;
 }
 
 #l-shift{
     position: absolute;
-    left: calc(50% - 145px);
+    left: calc(50% - 45px - 100px);
     text-align: center;
 }
 
@@ -125,4 +125,3 @@ div, button {
     border:1px solid  #cacaca;
 
   }
-   
