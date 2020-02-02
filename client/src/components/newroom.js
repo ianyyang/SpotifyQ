@@ -171,7 +171,7 @@ class NewRoom extends Component {
                         Would you like to open the Spotify web app <a href = "spotify:">here?</a><br/>
                         Or open the Spotify web player <a href = "https://open.spotify.com/" target="_blank">here?</a><br/>
                     </label>
-                    <button onClick={() => window.location.reload()}>Try Again</button>
+                    <button className="button_a" onClick={() => window.location.reload()}>Try Again</button>
                 </div>
             )
             case 'roomPlaylist': return (

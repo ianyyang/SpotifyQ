@@ -5,15 +5,15 @@ import './App.css';
 import Home from './components/home'
 
 class App extends Component {
-  render() {
-    return (
-      <div className="App">
-        
-        <Home />
+    render() {
+        return (
+            <div className="App">
 
-      </div>
-    );
-  }
+                <Home {...this.state}/>
+
+            </div>
+        );
+    }
 }
 
 export default App;

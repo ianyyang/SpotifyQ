@@ -4,7 +4,6 @@ import React, { Component } from 'react';
 import NewRoom from './newroom'
 import Spotify from 'spotify-web-api-js';
 
-
 class Home extends Component {
     constructor(){
         super();

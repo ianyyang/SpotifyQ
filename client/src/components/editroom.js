@@ -3,7 +3,6 @@ import HostRoom from './hostroom'
 import Search from './search'
 import List from 'react-list-select'
 
-
 import '../App.css';
 
 class EditRoom extends Component {
