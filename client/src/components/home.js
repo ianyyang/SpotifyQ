@@ -5,29 +5,29 @@ import NewRoom from './newroom'
 import Spotify from 'spotify-web-api-js';
 
 class Home extends Component {
-    constructor(){
+    constructor() {
         super();
         const params = this.getHashParams();
         const WebApi = new Spotify();
 
-        this.state ={
-            render:'',
+        this.state = {
+            render: '',
             loggedIn: params.access_token ? true : false,
             spotifyWebApi: WebApi,
             userInfo: {
                 country: '',
                 display_name: '',
                 email: '',
-                id: '' ,
-                images: ''   
+                id: '',
+                images: ''
             },
             playlists: [],
             devices: []
-        }   
-        if (params.access_token){
+        }
+        if (params.access_token) {
             this.state.spotifyWebApi.setAccessToken(params.access_token);
         }
-        if (this.state.loggedIn){
+        if (this.state.loggedIn) {
             this.getCurrentUser();
             this.getUserDevices();
             this.getUserPlaylists();
@@ -43,101 +43,105 @@ class Home extends Component {
         var hashParams = {};
         var e, r = /([^&;=]+)=?([^&;]*)/g,
             q = window.location.hash.substring(1);
-        while ( e = r.exec(q)) {
+        e = r.exec(q)
+        while (e) {
             hashParams[e[1]] = decodeURIComponent(e[2]);
+            e = r.exec(q);
         }
         return hashParams;
     }
 
     // Get the authenticated user
-    getCurrentUser(){
+    getCurrentUser() {
         this.state.spotifyWebApi.getMe()
-        .then((response) =>{
-            console.log('User ID:', response.id);
-            this.setState({
-                userInfo: {
-                    country: response.country,
-                    display_name: response.display_name,
-                    email: response.email,
-                    id: response.id
-                }
-            })
+            .then((response) => {
+                console.log('User ID:', response.id);
+                this.setState({
+                    userInfo: {
+                        country: response.country,
+                        display_name: response.display_name,
+                        email: response.email,
+                        id: response.id
+                    }
+                })
 
-        }, function(err) {
-            console.log('Something went wrong!', err);
-    });
+            }, function (err) {
+                console.log('Something went wrong!', err);
+            });
     }
 
-    getUserDevices(){
+    getUserDevices() {
         this.state.spotifyWebApi.getMyDevices()
-        .then((response) => {
-          console.log('User devices successfully captured!', response);
-            
-          var json = response.devices;
-          var arr = [];
-    
-          Object.keys(json).forEach(function(key) {
-            arr.push({
-                name: json[key].name,
-                id: json[key].id
-              });
-          });
-    
-          this.setState({
-            devices: arr
-          }, function(err) {
-            console.error('Something went wrong!', err);
-          });
-        })
+            .then((response) => {
+                console.log('User devices successfully captured!', response);
+
+                var json = response.devices;
+                var arr = [];
+
+                Object.keys(json).forEach(function (key) {
+                    arr.push({
+                        name: json[key].name,
+                        id: json[key].id
+                    });
+                });
+
+                this.setState({
+                    devices: arr
+                }, function (err) {
+                    console.error('Something went wrong!', err);
+                });
+            })
     }
 
-    getUserPlaylists(){
+    getUserPlaylists() {
         this.state.spotifyWebApi.getUserPlaylists()
-        .then((response) => {
-          console.log('User playlists successfully captured!', response);
-          
-          var json = response.items;
-          var arr = [];
-    
-          Object.keys(json).forEach(function(key) {
-            arr.push({
-                name: json[key].name,
-                id: json[key].id
-              })
-          });
-    
-          this.setState({
-            playlists: arr
-          }, function(err) {
-            console.error('Something went wrong!', err);
-          });
-        })
-      }
+            .then((response) => {
+                console.log('User playlists successfully captured!', response);
 
-    handleClick(compName, e){
-        console.log(compName);
-        this.setState({render:compName});
+                var json = response.items;
+                var arr = [];
+
+                Object.keys(json).forEach(function (key) {
+                    arr.push({
+                        name: json[key].name,
+                        id: json[key].id
+                    })
+                });
+
+                this.setState({
+                    playlists: arr
+                }, function (err) {
+                    console.error('Something went wrong!', err);
+                });
+            })
     }
 
-    _renderSubComp(){
-        switch(this.state.render){
+    handleClick(compName, e) {
+        console.log(compName);
+        this.setState({ render: compName });
+    }
+
+    _renderSubComp() {
+        switch (this.state.render) {
             case 'login': window.location.assign('http://localhost:8888/login')
-            case 'new': return <NewRoom {...this.state}/>
-            default: return(
-                <div className="Home">        
+            /* falls through */
+            case 'new': return <NewRoom {...this.state} />
+            /* falls through */
+            default: return (
+                <div className="Home">
                     <button className="button_a" onClick={this.handleClick.bind(this, 'login')}>New Room</button>
                 </div>
-          );
+            );
         }
     }
 
     render() {
-      return (
-        <div className="Home">          
-            {this._renderSubComp()}
-        </div>
-      );
+        return (
+            <div className="Home">
+                {this._renderSubComp()}
+            </div>
+        );
     }
-  }
-  
+}
+
 export default Home;

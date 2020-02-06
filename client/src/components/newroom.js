@@ -1,14 +1,14 @@
 import React, { Component } from 'react';
- 
+
 import HostRoom from './hostroom'
- 
+
 class NewRoom extends Component {
     constructor(props) {
         super(props);
-        
+
         this.state = {
             ...this.props,
-            newPlaylist:'New Playlist',
+            newPlaylist: 'New Playlist',
             selectedPlaylist: '',
             selectedPlaylistID: '',
             selectedDevice: '',
@@ -17,115 +17,114 @@ class NewRoom extends Component {
             newPlaylistCheck: false,
             render: 'roomPlaylist'
         }
-      }
-       
-    postNewPlaylist(){
+    }
 
-        this.props.spotifyWebApi.createPlaylist(this.props.userInfo.id, {'name': this.state.newPlaylist})
-        .then((response) => {
-            //alert('New playlist created: ', response.name);
-            this.props.playlists.push({
-                name: response.name,
-                id: response.id
-              });
+    postNewPlaylist() {
+        this.props.spotifyWebApi.createPlaylist(this.props.userInfo.id, { 'name': this.state.newPlaylist })
+            .then((response) => {
+                //alert('New playlist created: ', response.name);
+                this.props.playlists.push({
+                    name: response.name,
+                    id: response.id
+                });
 
-              this.setState({selectedPlaylist: response.name});
-              this.setState({selectedPlaylistID: response.id});
+                this.setState({ selectedPlaylist: response.name });
+                this.setState({ selectedPlaylistID: response.id });
 
-        }, function(err) {
-            console.error('Something went wrong!', err);
-        })
+            }, function (err) {
+                console.error('Something went wrong!', err);
+            })
 
         // Need to make it follow through to the next window using the newly created playlist       
         this.handleClick('next', this)
     }
- 
-    getUserPlaylists(){
-        this.props.spotifyWebApi.getUserPlaylists()
-        .then((response) => {
-          console.log('User playlists successfully captured!', response);
-         
-          var json = response.items;
-          var arr = [];
-   
-          Object.keys(json).forEach(function(key) {
-            arr.push({
-                name: json[key].name,
-                id: json[key].id
-              })
-          });
-   
-          this.setState({
-            playlists: arr
-          }, function(err) {
-            console.error('Something went wrong!', err);
-          });
-        })
-      }
 
-    getPlaylistTracks(id){
+    getUserPlaylists() {
+        this.props.spotifyWebApi.getUserPlaylists()
+            .then((response) => {
+                console.log('User playlists successfully captured!', response);
+
+                var json = response.items;
+                var arr = [];
+
+                Object.keys(json).forEach(function (key) {
+                    arr.push({
+                        name: json[key].name,
+                        id: json[key].id
+                    })
+                });
+
+                this.setState({
+                    playlists: arr
+                }, function (err) {
+                    console.error('Something went wrong!', err);
+                });
+            })
+    }
+
+    getPlaylistTracks(id) {
         var playlists = this.props.playlists;
 
-        for (var i = 0; i < playlists.length; i++){
-            if (playlists[i].name === this.state.selectedPlaylist){
+        for (var i = 0; i < playlists.length; i++) {
+            if (playlists[i].name === this.state.selectedPlaylist) {
                 id = playlists[i].id;
-                this.setState({selectedPlaylistID: id});
+                this.setState({ selectedPlaylistID: id });
             }
         }
-        
-        this.props.spotifyWebApi.getPlaylistTracks(this.props.userInfo.id ,id, {
+
+        this.props.spotifyWebApi.getPlaylistTracks(this.props.userInfo.id, id, {
             offset: 0,
             limit: 20,
             fields: 'items'
-          })
-          .then((response)  => {
-              console.log('The playlist contains these tracks', response);
+        })
+            .then((response) => {
+                console.log('The playlist contains these tracks', response);
 
-              var json = response.items;
-              var arr = [];
+                var json = response.items;
+                var arr = [];
 
-              Object.keys(json).forEach(function(key) {
-                var artists = '';
-                for (var i = 0; i < json[key].track.artists.length; i++){
-                    artists += json[key].track.artists[i].name + ", ";
-                }
+                Object.keys(json).forEach(function (key) {
+                    var artists = '';
+                    for (var i = 0; i < json[key].track.artists.length; i++) {
+                        artists += json[key].track.artists[i].name + ", ";
+                    }
 
-                arr.push({
-                    name: json[key].track.name,
-                    artists: artists.slice(0,-2),
-                    id: json[key].track.id
-                  })
-              });
+                    arr.push({
+                        name: json[key].track.name,
+                        artists: artists.slice(0, -2),
+                        id: json[key].track.id
+                    })
+                });
 
-              this.setState({
-                roomTracks: arr
-              })
+                this.setState({
+                    roomTracks: arr
+                })
             },
-            function(err) {
-              console.log('Something went wrong!', err);
-            }
-          );
+                function (err) {
+                    console.log('Something went wrong!', err);
+                }
+            );
     }
-   
-    handleClick(compName, e){
-        if (compName === 'roomPlaylist'){
-            this.setState({newPlaylistCheck: true});
+
+    handleClick(compName, e) {
+        if (compName === 'roomPlaylist') {
+            this.setState({ newPlaylistCheck: true });
         }
 
-        if (this.props.devices.length == 0) {
-            this.setState({render: 'emptyDevices'})
+        if (this.props.devices.length === 0) {
+            this.setState({ render: 'emptyDevices' })
         } else {
             var playlist_id;
-            if (compName === 'next'){
-                
+            if (compName === 'next') {
+
                 // Handle validation for first value selections of dropdowns.
-                if (this.state.selectedDevice === ''){
-                    this.setState({selectedDevice: this.props.devices[0].name});
-                    this.setState({selectedDeviceID: this.props.devices[0].id});
+                if (this.state.selectedDevice === '') {
+                    this.setState({ selectedDevice: this.props.devices[0].name });
+                    this.setState({ selectedDeviceID: this.props.devices[0].id });
                 }
-                if (this.state.selectedPlaylist === '' || this.state.newPlaylistCheck === true){
-                    this.setState({selectedPlaylist: this.props.playlists[0].name});
-                    this.setState({selectedPlaylistID: this.props.playlists[0].id});
+                if (this.state.selectedPlaylist === '' || this.state.newPlaylistCheck === true) {
+                    this.setState({ selectedPlaylist: this.props.playlists[0].name });
+                    this.setState({ selectedPlaylistID: this.props.playlists[0].id });
                     playlist_id = this.props.playlists[0].id;
                 }
 
@@ -133,43 +132,43 @@ class NewRoom extends Component {
                 var device = '';
                 var d_id = '';
 
-                for (device of this.props.devices){
-                    if (device.name === this.state.selectedDevice){
+                for (device of this.props.devices) {
+                    if (device.name === this.state.selectedDevice) {
                         d_id = device.id;
-                        this.setState({selectedDeviceID: d_id});
+                        this.setState({ selectedDeviceID: d_id });
                     }
                 }
 
                 // Get room tracks, selected playlist name, id
                 this.getPlaylistTracks(playlist_id);
             }
-            
-            this.setState({render:compName});
+
+            this.setState({ render: compName });
         }
     }
- 
+
     handleDeviceChange(event) {
-        this.setState({selectedDevice: event.target.value});
+        this.setState({ selectedDevice: event.target.value });
     }
- 
+
     handlePlaylistTextChange(event) {
-        this.setState({newPlaylist: event.target.value});
-        this.setState({selectedPlaylist: event.target.value});
-      }
-     
-    handlePlaylistListChange(event) {
-        this.setState({selectedPlaylist: event.target.value});
+        this.setState({ newPlaylist: event.target.value });
+        this.setState({ selectedPlaylist: event.target.value });
     }
- 
-    _renderSubComp(){
-        switch(this.state.render){
-            case 'next': return <HostRoom home={this.props} newroom={this.state}/>
+
+    handlePlaylistListChange(event) {
+        this.setState({ selectedPlaylist: event.target.value });
+    }
+
+    _renderSubComp() {
+        switch (this.state.render) {
+            case 'next': return <HostRoom home={this.props} newroom={this.state} />
             case 'emptyDevices': return (
                 <div>
                     <label>
-                        It looks like you have no Spotify applications open on any devices.<br/>
-                        Would you like to open the Spotify web app <a href = "spotify:">here?</a><br/>
-                        Or open the Spotify web player <a href = "https://open.spotify.com/" target="_blank">here?</a><br/>
+                        It looks like you have no Spotify applications open on any devices.<br />
+                        Would you like to open the Spotify web app <a href="spotify:">here?</a><br />
+                        Or open the Spotify web player <a href="https://open.spotify.com/" target="_blank" rel="noopener noreferrer">here?</a><br />
                     </label>
                     <button className="button_a" onClick={() => window.location.reload()}>Try Again</button>
                 </div>
@@ -177,12 +176,12 @@ class NewRoom extends Component {
             case 'roomPlaylist': return (
                 <div>
                     <h1>NEW ROOM HOSTED BY: {this.props.userInfo.display_name.toUpperCase()}</h1>
-                    <label>Choose Device: <br/>
+                    <label>Choose Device: <br />
                         <select className="select-a-styled" id="devices" onChange={this.handleDeviceChange.bind(this)}>{this.props.devices.map(this.MakeItem)}</select>
                     </label>
-    
+
                     <div>
-                        <label>Choose Room Playlist:<br/>
+                        <label>Choose Room Playlist:<br />
                             <select className="select-a-styled" id="playlists" onChange={this.handlePlaylistListChange.bind(this)}>{this.props.playlists.map(this.MakeItem)}</select>
                         </label>
                         <button className="button_a" onClick={() => this.handleClick('next', this)}>Next</button>
@@ -193,12 +192,12 @@ class NewRoom extends Component {
             case 'newPlaylist': return (
                 <div>
                     <h1>NEW ROOM HOSTED BY: {this.props.userInfo.display_name.toUpperCase()}</h1>
-                    <label>Choose Device: <br/>
+                    <label>Choose Device: <br />
                         <select className="select-a-styled" id="devices" onChange={this.handleDeviceChange.bind(this)}>{this.props.devices.map(this.MakeItem)}</select>
                     </label>
-    
+
                     <div>
-                        <label> Create New Playlist: <br/>
+                        <label> Create New Playlist: <br />
                             <input type="text" value={this.state.newPlaylist} onClick={this.handlePlaylistTextChange.bind(this)} onChange={this.handlePlaylistTextChange.bind(this)} />
                         </label>
                         <button className="button_a" onClick={() => this.postNewPlaylist()}>Submit</button>
@@ -209,25 +208,25 @@ class NewRoom extends Component {
             default: return (
                 <div>
                     <h1>New Room Hosted By: {this.props.userInfo.display_name}</h1>
-                    <label>Choose Device: <br/>
+                    <label>Choose Device: <br />
                         <select className="select-a-styled" id="devices" onChange={this.handleDeviceChange.bind(this)}>{this.props.devices.map(this.MakeItem)}</select>
                     </label>
                 </div>
             );
         }
     }
- 
-    MakeItem = function(X, i) {
+
+    MakeItem = function (X, i) {
         return <option key={i}>{X.name}</option>;
-      };
- 
+    };
+
     render() {
-      return (
-        <div>  
-            {this._renderSubComp()}
-        </div>    
-      );
+        return (
+            <div>
+                {this._renderSubComp()}
+            </div>
+        );
     }
-  }
- 
+}
+
 export default NewRoom;

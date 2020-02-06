@@ -82,7 +82,7 @@ class HostRoom extends Component {
     }
 
     throttleGetNowPlaying() {
-        setTimeout(() => {this.getNowPlaying()}, 1000);
+        setTimeout(() => { this.getNowPlaying() }, 1000);
     }
 
     resumePlayback() {
@@ -104,7 +104,7 @@ class HostRoom extends Component {
     }
 
     resumePausePlayback() {
-        if (this.state.playing == 0) {
+        if (this.state.playing === 0) {
             this.resumePlayback()
             this.setState({ playing: 1 })
         } else {
@@ -144,7 +144,7 @@ class HostRoom extends Component {
                     <label>Device: {this.props.newroom.selectedDevice}</label>
 
                     <div>
-                        <img src={this.state.nowPlaying.image} style={{ width: 100 }} />
+                        <img alt="Now Playing Album Art" src={this.state.nowPlaying.image} style={{ width: 100 }} />
                     </div>
                     <div> {this.state.nowPlaying.name + " - " + this.state.nowPlaying.artists}</div>
 
