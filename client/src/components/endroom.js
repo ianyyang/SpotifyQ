@@ -9,6 +9,7 @@ class EndRoom extends Component {
         this.state = {
             ...this.props,
             oneLoadCheck: true,
+            date: new Date(),
             num_songs: 0,
             total_time: 0,
             top_bpm: [],
@@ -73,7 +74,10 @@ class EndRoom extends Component {
     }
 
     end() {
-        this.setState({ render: 'restart' });
+        this.setState({
+            render: 'restart',
+            date: new Date()
+        });
     }
 
     _renderSubComp() {
@@ -94,6 +98,31 @@ class EndRoom extends Component {
             );
         }
     }
+
+    // --- "Your Session At A Glance"
+    // when you started your session: "this.props.newroom.date"
+    // when you ended your session: "this.state.date"
+    // length of session: "this.state.date.getTime() - this.props.newroom.date.getTime()" (in milliseconds)
+    
+    // number of songs played: "this.state.num_songs"
+    // total length of all songs: "this.state.total_time" (in milliseconds)
+
+    // most common song: ???
+    // most common artist: "this.props.newroom.stats.artists"
+    // most common genre: ???
+    // *** CHOOSE ABOVE OR BELOW
+    // genre breakdown: ???
+
+
+    // --- "Music Tastes Under The Scope"
+    // *** POSSIBLE OPTION: instead of top 3, do paginations of 3
+    // top 3 bpm: this.state.top_bpm
+    // top 3 energy: this.state.top_energy
+    // top 3 dance: this.state.top_dance
+    // top 3 valence: this.state.top_valence
+
+    // *** USE VICTORY LIBRARY (?)
+    // graph: every song's length (in s), bpm, energy (*100), dance (*100), valence(*100)
 
     render() {
         return (

@@ -9,6 +9,7 @@ class HostRoom extends Component {
         super();
         this.state = {
             ...this.props,
+            date: new Date(),
             nowPlaying: {
                 name: '',
                 artists: '',
@@ -24,6 +25,7 @@ class HostRoom extends Component {
                 dance: [],
                 energy: [],
                 valence: [],
+                artists: []
             }
         }
     }
@@ -41,7 +43,8 @@ class HostRoom extends Component {
                                 bpm: this.state.stats.bpm.concat(response.tempo),
                                 dance: this.state.stats.dance.concat(response.danceability),
                                 energy: this.state.stats.energy.concat(response.energy),
-                                valence: this.state.stats.valence.concat(response.valence)
+                                valence: this.state.stats.valence.concat(response.valence),
+                                artists: this.state.stats.artists
                             }
                         })
                     }
@@ -59,8 +62,21 @@ class HostRoom extends Component {
                 var artists = '';
                 if (response) {
 
-                    for (var i = 0; i < response.item.artists.length; i++) {
+                    for (let i = 0; i < response.item.artists.length; i++) {
                         artists += response.item.artists[i].name + ", ";
+                        if (!this.state.stats.id.includes(response.item.id)) {
+                            this.setState({
+                                stats: {
+                                    id: this.state.stats.id,
+                                    duration: this.state.stats.duration,
+                                    bpm: this.state.stats.bpm,
+                                    dance: this.state.stats.dance,
+                                    energy: this.state.stats.energy,
+                                    valence: this.state.stats.valence,
+                                    artists: this.state.stats.artists.concat(response.item.artists[i].name)
+                                }
+                            })
+                        }
                     }
 
                     this.setState({
@@ -71,9 +87,7 @@ class HostRoom extends Component {
                         }
                     })
 
-                    if (!this.state.stats.id.includes(response.item.id)) {
-                        this.getAudioFeature(response.item.id)
-                    }
+                    this.getAudioFeature(response.item.id)
                 }
 
             }, function (err) {
