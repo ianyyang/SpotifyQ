@@ -33,16 +33,18 @@ class HostRoom extends Component {
             .then((response) => {
                 console.log('Fetched audio features!', response);
                 if (response) {
-                    this.setState({
-                        stats: {
-                            id: this.state.stats.id.concat(response.id),
-                            duration: this.state.stats.duration.concat(response.duration_ms),
-                            bpm: this.state.stats.bpm.concat(response.tempo),
-                            dance: this.state.stats.dance.concat(response.danceability),
-                            energy: this.state.stats.energy.concat(response.energy),
-                            valence: this.state.stats.valence.concat(response.valence)
-                        }
-                    })
+                    if (!this.state.stats.id.includes(response.id)) {
+                        this.setState({
+                            stats: {
+                                id: this.state.stats.id.concat(response.id),
+                                duration: this.state.stats.duration.concat(response.duration_ms),
+                                bpm: this.state.stats.bpm.concat(response.tempo),
+                                dance: this.state.stats.dance.concat(response.danceability),
+                                energy: this.state.stats.energy.concat(response.energy),
+                                valence: this.state.stats.valence.concat(response.valence)
+                            }
+                        })
+                    }
                 }
             }, function (err) {
                 console.error('Something went wrong!', err);
