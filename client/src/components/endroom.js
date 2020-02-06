@@ -15,8 +15,84 @@ class EndRoom extends Component {
             top_bpm: [],
             top_energy: [],
             top_dance: [],
-            top_valence: []
+            top_valence: [],
+            names: [],
+            albums: [],
+            artists: [],
+            genres: [],
+            art: []
         }
+    }
+
+    getName(trackID) {
+        this.props.home.home.spotifyWebApi.getTrack(trackID)
+            .then((response) => {
+                console.log('Fetched track information - for track name!', response);
+                if (response) {
+                    this.setState(prevState => ({
+                        names: [...prevState.names, response.name]
+                    }))
+                }
+            })
+    }
+
+    getAlbum(trackID) {
+        this.props.home.home.spotifyWebApi.getTrack(trackID)
+            .then((response) => {
+                console.log('Fetched track information - for album information!', response);
+                if (response) {
+                    this.setState(prevState => ({
+                        albums: [...prevState.albums, response.album.name]
+                    }))
+                }
+            })
+    }
+
+    getArtistsAndGenre(trackID) {
+        this.props.home.home.spotifyWebApi.getTrack(trackID)
+            .then((response) => {
+                console.log('Fetched track information - for artist information!', response);
+                if (response) {
+                    var artists_list = []
+                    for (var i = 0; i < response.artists.length; i++) {
+                        artists_list = [...artists_list, response.artists[i].name]
+                    }
+
+                    this.setState({
+                        artists: this.state.artists.concat(artists_list)
+                    })
+
+                    // get top genre of the main artist
+                    this.props.home.home.spotifyWebApi.getArtist(artists_list[0])
+                        .then((response) => {
+                            console.log('Fetched artist information - for top genre!', response);
+                            if (response) {
+                                this.setState(prevState => ({
+                                    genres: [...prevState.genres, response.genres[0]]
+                                }))
+                            }
+                        })
+                }
+            })
+    }
+
+    getArt(trackID) {
+        this.props.home.home.spotifyWebApi.getTrack(trackID)
+            .then((response) => {
+                console.log('Fetched track information - for track art!', response);
+                if (response) {
+                    this.setState(prevState => ({
+                        art: [...prevState.art, response.album.images[0].url]
+                    }))
+                }
+            })
+    }
+
+    getNameAlbumArtistGenreArt(trackID) {
+        this.getName(trackID)
+        this.getAlbum(trackID)
+        this.getArtistsAndGenre(trackID)
+        this.getArt(trackID)
     }
 
     indexOfMax(arr, seen) {
@@ -50,6 +126,11 @@ class EndRoom extends Component {
 
     getStats() {
         if (this.state.oneLoadCheck) {
+            // compile album, artists, and album art
+            this.props.newroom.stats.id.map((id) => (
+                this.getNameAlbumArtistGenreArt(id)
+            ))
+
             // compile song count and total duration
             this.props.newroom.stats.duration.map((duration) => (
                 this.setState(prevState => ({
@@ -58,7 +139,7 @@ class EndRoom extends Component {
                 }))
             ))
 
-            for (var i = 0; i < this.props.newroom.stats.bpm.length; i++) {
+            for (var i = 0; i < this.props.newroom.stats.id.length; i++) {
                 // collect maxes
                 this.setState(prevState => ({
                     top_bpm: [...prevState.top_bpm, this.indexOfMax(this.props.newroom.stats.bpm, prevState.top_bpm)],
@@ -87,41 +168,36 @@ class EndRoom extends Component {
                 <div>
                     <h1>{this.props.home.home.userInfo.display_name.toUpperCase()}'s ROOM</h1>
 
-                    <div>
-                        {this.props.newroom.history}
-                    </div>
-
                     <button className="button_a" onClick={() => this.end()}>
                         New Room
-                </button>
+                    </button>
                 </div>
             );
         }
     }
 
-    // --- "Your Session At A Glance"
+    // ===== "Your Session At A Glance"
     // when you started your session: "this.props.newroom.date"
     // when you ended your session: "this.state.date"
     // length of session: "this.state.date.getTime() - this.props.newroom.date.getTime()" (in milliseconds)
-    
-    // number of songs played: "this.state.num_songs"
     // total length of all songs: "this.state.total_time" (in milliseconds)
+    // ----- "You Listened To"
+    // number of songs: "this.state.num_songs"
+    // number of albums: "this.state.albums.length"
+    // number of artists: "this.state.artists.length"
+    // number of genres: "this.state.genres.length"
+    // ----- "Here Were Some Of Your Favourites"
+    // most common song: "this.props.newroom.stats.id"
+    // most common album: this.state.albums"
+    // most common artist: "this.state.artists"
+    // most common genre: "this.state.genres"
 
-    // most common song: ???
-    // most common artist: "this.props.newroom.stats.artists"
-    // most common genre: ???
-    // *** CHOOSE ABOVE OR BELOW
-    // genre breakdown: ???
-
-
-    // --- "Music Tastes Under The Scope"
-    // *** POSSIBLE OPTION: instead of top 3, do paginations of 3
-    // top 3 bpm: this.state.top_bpm
-    // top 3 energy: this.state.top_energy
-    // top 3 dance: this.state.top_dance
-    // top 3 valence: this.state.top_valence
-
-    // *** USE VICTORY LIBRARY (?)
+    // ===== "Your Music Tastes Under The Scope"
+    // top 3 bpm: "this.state.top_bpm" (Your average beats per minute is X)
+    // top 3 energy: "this.state.top_energy" (X% of your tracks are energetic)
+    // top 3 dance: "this.state.top_dance" (X% of your tracks are danceable)
+    // top 3 valence: "this.state.top_valence" (X% of your tracks are high/low valence)
+    // ----- 
     // graph: every song's length (in s), bpm, energy (*100), dance (*100), valence(*100)
 
     render() {

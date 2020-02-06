@@ -24,8 +24,7 @@ class HostRoom extends Component {
                 bpm: [],
                 dance: [],
                 energy: [],
-                valence: [],
-                artists: []
+                valence: []
             }
         }
     }
@@ -35,7 +34,7 @@ class HostRoom extends Component {
             .then((response) => {
                 console.log('Fetched audio features!', response);
                 if (response) {
-                    if (!this.state.stats.id.includes(response.id)) {
+                    if (response.id !== this.state.stats.id[this.state.stats.id.length - 1]) {
                         this.setState({
                             stats: {
                                 id: this.state.stats.id.concat(response.id),
@@ -44,7 +43,6 @@ class HostRoom extends Component {
                                 dance: this.state.stats.dance.concat(response.danceability),
                                 energy: this.state.stats.energy.concat(response.energy),
                                 valence: this.state.stats.valence.concat(response.valence),
-                                artists: this.state.stats.artists
                             }
                         })
                     }
@@ -61,22 +59,8 @@ class HostRoom extends Component {
 
                 var artists = '';
                 if (response) {
-
-                    for (let i = 0; i < response.item.artists.length; i++) {
+                    for (var i = 0; i < response.item.artists.length; i++) {
                         artists += response.item.artists[i].name + ", ";
-                        if (!this.state.stats.id.includes(response.item.id)) {
-                            this.setState({
-                                stats: {
-                                    id: this.state.stats.id,
-                                    duration: this.state.stats.duration,
-                                    bpm: this.state.stats.bpm,
-                                    dance: this.state.stats.dance,
-                                    energy: this.state.stats.energy,
-                                    valence: this.state.stats.valence,
-                                    artists: this.state.stats.artists.concat(response.item.artists[i].name)
-                                }
-                            })
-                        }
                     }
 
                     this.setState({
@@ -87,9 +71,10 @@ class HostRoom extends Component {
                         }
                     })
 
-                    this.getAudioFeature(response.item.id)
+                    if (response.item.id !== this.state.stats.id[this.state.stats.id.length - 1]) {
+                        this.getAudioFeature(response.item.id)
+                    }
                 }
-
             }, function (err) {
                 console.error('Something went wrong!', err);
             });
