@@ -20,7 +20,9 @@ class EndRoom extends Component {
             albums: [],
             artists: [],
             genres: [],
-            art: []
+            art: [],
+            unique_artists: 0,
+            main_artist: ''
         }
     }
 
@@ -56,24 +58,28 @@ class EndRoom extends Component {
                     var artists_list = []
                     for (var i = 0; i < response.artists.length; i++) {
                         artists_list = [...artists_list, response.artists[i].name]
+                        if (!this.state.artists.includes(response.artists[i].name)) {
+                            this.setState({ unique_artists: this.state.unique_artists + 1 })
+                        }
                     }
 
                     this.setState({
-                        artists: this.state.artists.concat(artists_list)
+                        artists: this.state.artists.concat(artists_list),
+                        main_artist: artists_list[0]
                     })
-
-                    // get top genre of the main artist
-                    this.props.home.home.spotifyWebApi.getArtist(artists_list[0])
-                        .then((response) => {
-                            console.log('Fetched artist information - for top genre!', response);
-                            if (response) {
-                                this.setState(prevState => ({
-                                    genres: [...prevState.genres, response.genres[0]]
-                                }))
-                            }
-                        })
                 }
             })
+
+        // // get top genre of the main artist
+        // this.props.home.home.spotifyWebApi.getArtist(this.state.main_artist)
+        //     .then((response) => {
+        //         console.log('Fetched artist information - for top genre!', response);
+        //         if (response) {
+        //             this.setState(prevState => ({
+        //                 genres: [...prevState.genres, response.genres[0]]
+        //             }))
+        //         }
+        //     })
     }
 
     getArt(trackID) {
@@ -161,12 +167,66 @@ class EndRoom extends Component {
         });
     }
 
+    mode(array) {
+        if (array.length === 0)
+            return null;
+        var modeMap = {};
+        var maxEl = array[0], maxCount = 1;
+        for (var i = 0; i < array.length; i++) {
+            var el = array[i];
+            if (modeMap[el] == null)
+                modeMap[el] = 1;
+            else
+                modeMap[el]++;
+            if (modeMap[el] > maxCount) {
+                maxEl = el;
+                maxCount = modeMap[el];
+            }
+        }
+        return maxEl;
+    }
+
     _renderSubComp() {
         switch (this.state.render) {
             case 'restart': return <Home />
             default: return (
                 <div>
-                    <h1>{this.props.home.home.userInfo.display_name.toUpperCase()}'s ROOM</h1>
+                    <h1>Your Session At A Glance</h1>
+                    <h3>
+                        Start: {this.props.newroom.date.toString()} End: {this.state.date.toString()}
+                    </h3>
+
+                    <h2>That's A Total Of</h2>
+                    <h2>
+                        {Math.floor((this.state.date.getTime() - this.props.newroom.date.getTime()) / 1000 / 60 / 60)} hours {Math.floor((this.state.date.getTime() - this.props.newroom.date.getTime()) / 1000 / 60) % 60} minutes {Math.floor((this.state.date.getTime() - this.props.newroom.date.getTime()) / 1000) % 60} seconds
+                    </h2>
+
+                    <h2>You Listened To</h2>
+                    <h3>
+                        {this.state.num_songs} songs from {this.state.albums.length} albums by {this.state.unique_artists} artists
+                        {/* in {this.state.genres.length} genres */}
+                    </h3>
+                    
+                    <h2>Here Were Some Of Your Favourites</h2>
+                    <h3>
+                        name: {this.mode(this.state.names)}
+                        <br></br>
+                        album: {this.mode(this.state.albums)}
+                        <br></br>
+                        artist: {this.mode(this.state.artists)}
+                        {/* genre: {this.mode(this.state.genres)} */}
+                    </h3>
+
+                    <h1>Your Music Tastes Under The Scope</h1>
+                    <h3>
+                        bpm {this.state.art[this.state.top_bpm[0]]} {this.state.art[this.state.top_bpm[1]]} {this.state.art[this.state.top_bpm[2]]}
+                        <br></br>
+                        energy {this.state.art[this.state.top_energy[0]]} {this.state.art[this.state.top_energy[1]]} {this.state.art[this.state.top_energy[2]]}
+                        <br></br>
+                        dance {this.state.art[this.state.top_dance[0]]} {this.state.art[this.state.top_dance[1]]} {this.state.art[this.state.top_dance[2]]}
+                        <br></br>
+                        valence {this.state.art[this.state.top_valence[0]]} {this.state.art[this.state.top_valence[1]]} {this.state.art[this.state.top_valence[2]]}
+                    </h3>
 
                     <button className="button_a" onClick={() => this.end()}>
                         New Room
@@ -187,7 +247,7 @@ class EndRoom extends Component {
     // number of artists: "this.state.artists.length"
     // number of genres: "this.state.genres.length"
     // ----- "Here Were Some Of Your Favourites"
-    // most common song: "this.props.newroom.stats.id"
+    // most common song: "this.state.names"
     // most common album: this.state.albums"
     // most common artist: "this.state.artists"
     // most common genre: "this.state.genres"
