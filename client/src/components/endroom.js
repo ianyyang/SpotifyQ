@@ -1,7 +1,24 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import { withStyles } from '@material-ui/core/styles';
+import Grid from '@material-ui/core/Grid';
+import Button from '@material-ui/core/Button';
+import { ScrollTo } from 'react-scroll-to';
+
 import Home from './home'
 
 import '../App.css';
+
+const styles = theme => ({
+    root: {
+        flexGrow: 1,
+    },
+    paper: {
+        padding: theme.spacing.unit * 2,
+        textAlign: 'center',
+        color: theme.palette.text.secondary,
+    },
+});
 
 class EndRoom extends Component {
     constructor() {
@@ -22,7 +39,12 @@ class EndRoom extends Component {
             genres: [],
             art: [],
             unique_artists: 0,
-            main_artist: ''
+            main_artist: '',
+            render_top_three: 'tempo',
+            render_favourites: 'track',
+            top_artist_id: '',
+            top_artist_art: '',
+            top_album_art: ''
         }
     }
 
@@ -160,11 +182,34 @@ class EndRoom extends Component {
         }
     }
 
-    end() {
-        this.setState({
-            render: 'restart',
-            date: new Date()
-        });
+    getArtistID(trackID) {
+        this.props.home.home.spotifyWebApi.getTrack(trackID)
+            .then((response) => {
+                console.log('Fetched track information - for track art!', response);
+                if (response) {
+                    this.setState({ top_artist_id: response.artists[0].id })
+                }
+            })
+    }
+
+    getArtistArt(artistID) {
+        this.props.home.home.spotifyWebApi.getArtist(artistID)
+            .then((response) => {
+                console.log('Fetched track information - for track art!', response);
+                if (response) {
+                    this.setState({ top_artist_art: response.images[0].url })
+                }
+            })
+    }
+
+    getAlbumArt(trackID) {
+        this.props.home.home.spotifyWebApi.getTrack(trackID)
+            .then((response) => {
+                console.log('Fetched track information - for track art!', response);
+                if (response) {
+                    this.setState({ top_album_art: response.album.images[0].url })
+                }
+            })
     }
 
     mode(array) {
@@ -186,51 +231,186 @@ class EndRoom extends Component {
         return maxEl;
     }
 
+    end() {
+        this.setState({
+            render: 'restart',
+            date: new Date()
+        });
+    }
+
+    changeFavouritesRender(category) {
+        this.getArtistID(this.props.newroom.stats.id[this.state.albums.indexOf(this.mode(this.state.albums))])
+        this.getArtistArt(this.state.top_artist_id)
+        this.getAlbumArt(this.props.newroom.stats.id[this.state.albums.indexOf(this.mode(this.state.albums))])
+        this.setState({ render_favourites: category })
+    }
+
+    changeTopThreeRender(category) {
+        this.setState({ render_top_three: category })
+    }
+
+    _renderFavourites() {
+        switch (this.state.render_favourites) {
+            default: return (
+                <div>
+                    <img className='endroom-image' src={this.state.art[this.props.newroom.stats.id.indexOf(this.mode(this.props.newroom.stats.id))]} alt="" />
+                </div>
+            )
+            case 'artist': return (
+                <div>
+                    <img className='endroom-image' src={this.state.top_artist_art} alt="" />
+                </div>
+            )
+            case 'album': return (
+                <div>
+                    <img className='endroom-image' src={this.state.top_album_art} alt="" />
+                </div>
+            )
+        }
+    }
+
+    _renderTopThree() {
+        switch (this.state.render_top_three) {
+            default: return (
+                <div>
+                    <Grid container spacing={6} justify="center">
+                        <Grid item xs={2}>
+                            <img className='endroom-image' src={this.state.art[this.state.top_bpm[0]]} alt="" />
+                        </Grid>
+                        <Grid item xs={2}>
+                            <img className='endroom-image' src={this.state.art[this.state.top_bpm[1]]} alt="" />
+                        </Grid>
+                        <Grid item xs={2}>
+                            <img className='endroom-image' src={this.state.art[this.state.top_bpm[2]]} alt="" />
+                        </Grid>
+                    </Grid>
+                </div>
+            )
+            case 'energy': return (
+                <div>
+                    <Grid container spacing={6} justify="center">
+                        <Grid item xs={2}>
+                            <img className='endroom-image' src={this.state.art[this.state.top_energy[0]]} alt="" />
+                        </Grid>
+                        <Grid item xs={2}>
+                            <img className='endroom-image' src={this.state.art[this.state.top_energy[1]]} alt="" />
+                        </Grid>
+                        <Grid item xs={2}>
+                            <img className='endroom-image' src={this.state.art[this.state.top_energy[2]]} alt="" />
+                        </Grid>
+                    </Grid>
+                </div>
+            )
+            case 'dance': return (
+                <div>
+                    <Grid container spacing={6} justify="center">
+                        <Grid item xs={2}>
+                            <img className='endroom-image' src={this.state.art[this.state.top_dance[0]]} alt="" />
+                        </Grid>
+                        <Grid item xs={2}>
+                            <img className='endroom-image' src={this.state.art[this.state.top_dance[1]]} alt="" />
+                        </Grid>
+                        <Grid item xs={2}>
+                            <img className='endroom-image' src={this.state.art[this.state.top_dance[2]]} alt="" />
+                        </Grid>
+                    </Grid>
+                </div>
+            )
+            case 'valence': return (
+                <div>
+                    <Grid container spacing={6} justify="center">
+                        <Grid item xs={2}>
+                            <img className='endroom-image' src={this.state.art[this.state.top_valence[0]]} alt="" />
+                        </Grid>
+                        <Grid item xs={2}>
+                            <img className='endroom-image' src={this.state.art[this.state.top_valence[1]]} alt="" />
+                        </Grid>
+                        <Grid item xs={2}>
+                            <img className='endroom-image' src={this.state.art[this.state.top_valence[2]]} alt="" />
+                        </Grid>
+                    </Grid>
+                </div>
+            )
+        }
+    }
+
     _renderSubComp() {
+        const { classes } = this.props;
         switch (this.state.render) {
             case 'restart': return <Home />
             default: return (
-                <div>
-                    <h1>Your Session At A Glance</h1>
+                <div className={classes.root}>
+                    <div className='endroom-header'>
+                        <h1>Your Session At A Glance</h1>
+                    </div>
                     <h3>
-                        Start: {this.props.newroom.date.toString()} End: {this.state.date.toString()}
+                        Start: {this.props.newroom.date.toString()}
+                        <br></br>
+                        End: {this.state.date.toString()}
                     </h3>
 
-                    <h2>That's A Total Of</h2>
-                    <h2>
+                    <div className='endroom-subheader'>
+                        <h2>That's A Total Of</h2>
+                    </div>
+                    <h3>
                         {Math.floor((this.state.date.getTime() - this.props.newroom.date.getTime()) / 1000 / 60 / 60)} hours {Math.floor((this.state.date.getTime() - this.props.newroom.date.getTime()) / 1000 / 60) % 60} minutes {Math.floor((this.state.date.getTime() - this.props.newroom.date.getTime()) / 1000) % 60} seconds
-                    </h2>
+                            </h3>
 
-                    <h2>You Listened To</h2>
+                    <div className='endroom-subheader'>
+                        <h2>You Listened To</h2>
+                    </div>
                     <h3>
                         {this.state.num_songs} songs from {this.state.albums.length} albums by {this.state.unique_artists} artists
-                        {/* in {this.state.genres.length} genres */}
-                    </h3>
-                    
-                    <h2>Here Were Some Of Your Favourites</h2>
-                    <h3>
-                        name: {this.mode(this.state.names)}
-                        <br></br>
-                        album: {this.mode(this.state.albums)}
-                        <br></br>
-                        artist: {this.mode(this.state.artists)}
-                        {/* genre: {this.mode(this.state.genres)} */}
-                    </h3>
+                            </h3>
 
-                    <h1>Your Music Tastes Under The Scope</h1>
-                    <h3>
-                        bpm {this.state.art[this.state.top_bpm[0]]} {this.state.art[this.state.top_bpm[1]]} {this.state.art[this.state.top_bpm[2]]}
-                        <br></br>
-                        energy {this.state.art[this.state.top_energy[0]]} {this.state.art[this.state.top_energy[1]]} {this.state.art[this.state.top_energy[2]]}
-                        <br></br>
-                        dance {this.state.art[this.state.top_dance[0]]} {this.state.art[this.state.top_dance[1]]} {this.state.art[this.state.top_dance[2]]}
-                        <br></br>
-                        valence {this.state.art[this.state.top_valence[0]]} {this.state.art[this.state.top_valence[1]]} {this.state.art[this.state.top_valence[2]]}
-                    </h3>
+                    <div className='endroom-subheader'>
+                        <h2>Here Were Your Favourites</h2>
+                    </div>
+                    <div>
+                        <Grid container spacing={0} justify="center">
+                            <Grid item xs={1} justify="center">
+                                <Button onClick={() => this.changeFavouritesRender('track')}>Track</Button>
+                            </Grid>
+                            <Grid item xs={1} justify="center">
+                                <Button onClick={() => this.changeFavouritesRender('artist')}>Artist</Button>
+                            </Grid>
+                            <Grid item xs={1} justify="center">
+                                <Button onClick={() => this.changeFavouritesRender('album')}>Album</Button>
+                            </Grid>
+                        </Grid>
+                    </div>
 
-                    <button className="button_a" onClick={() => this.end()}>
-                        New Room
-                    </button>
+                    <div>
+                        {this._renderFavourites()}
+                    </div>
+
+                    <div className='endroom-header'>
+                        <h1>Your Music Tastes Under The Scope</h1>
+                    </div>
+                    <div>
+                        <Grid container spacing={0} justify="center">
+                            <Grid item xs={1} justify="center">
+                                <Button onClick={() => this.changeTopThreeRender('tempo')}>Tempo</Button>
+                            </Grid>
+                            <Grid item xs={1} justify="center">
+                                <Button onClick={() => this.changeTopThreeRender('energy')}>Energy</Button>
+                            </Grid>
+                            <Grid item xs={1} justify="center">
+                                <Button onClick={() => this.changeTopThreeRender('dance')}>Danceability</Button>
+                            </Grid>
+                            <Grid item xs={1} justify="center">
+                                <Button onClick={() => this.changeTopThreeRender('valence')}>Valence</Button>
+                            </Grid>
+                        </Grid>
+                    </div>
+
+                    <div>
+                        {this._renderTopThree()}
+                    </div>
+
+                    <div>
+                        <button className="button_a" onClick={() => this.end()}>New Room</button>
+                    </div>
                 </div>
             );
         }
@@ -270,5 +450,8 @@ class EndRoom extends Component {
     }
 }
 
+EndRoom.propTypes = {
+    classes: PropTypes.object.isRequired,
+};
 
-export default EndRoom;
+export default withStyles(styles)(EndRoom);
