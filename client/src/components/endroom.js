@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
-import { ScrollTo } from 'react-scroll-to';
 
 import Home from './home'
 
@@ -44,7 +43,11 @@ class EndRoom extends Component {
             render_favourites: 'track',
             top_artist_id: '',
             top_artist_art: '',
-            top_album_art: ''
+            top_album_art: '',
+            avg_bpm: 0,
+            percent_energy: 0,
+            percent_dance: 0,
+            percent_valence: 0
         }
     }
 
@@ -179,35 +182,76 @@ class EndRoom extends Component {
 
             // run once
             this.setState({ oneLoadCheck: false })
+            this.getAvgTempo(this.props.newroom.stats.bpm)
+            this.getAboveFiftyEnergy(this.props.newroom.stats.energy)
+            this.getAboveFiftyDance(this.props.newroom.stats.dance)
+            this.getAboveFiftyValence(this.props.newroom.stats.valence)
         }
     }
 
-    getArtistID(trackID) {
+    getAvgTempo(elmt) {
+        var sum = 0;
+        for (var i = 0; i < elmt.length; i++) {
+            sum += parseInt(elmt[i], 10); //don't forget to add the base
+        }
+
+        this.setState({ avg_bpm: Math.round(sum / elmt.length * 10) / 10 })
+    }
+
+    getAboveFiftyEnergy(elmt) {
+        var count = 0;
+        for (var i = 0; i < elmt.length; i++) {
+            if (elmt[i] >= 0.5) {
+                count++;
+            }
+        }
+
+        this.setState({ percent_energy: Math.round(count / elmt.length * 10) / 10 * 100 })
+    }
+
+    getAboveFiftyDance(elmt) {
+        var count = 0;
+        for (var i = 0; i < elmt.length; i++) {
+            if (elmt[i] >= 0.5) {
+                count++;
+            }
+        }
+
+        this.setState({ percent_dance: Math.round(count / elmt.length * 10) / 10 * 100 })
+    }
+
+    getAboveFiftyValence(elmt) {
+        var count = 0;
+        for (var i = 0; i < elmt.length; i++) {
+            if (elmt[i] >= 0.5) {
+                count++;
+            }
+        }
+
+        this.setState({ percent_valence: Math.round(count / elmt.length * 10) / 10 * 100 })
+    }
+
+    runGetAllArt() {
+        if (this.state.top_artist_art === '') {
+            this.getAllArt(this.getAllArt(this.props.newroom.stats.id[this.state.albums.indexOf(this.mode(this.state.albums))]))
+        }
+    }
+
+    getAllArt(trackID) {
         this.props.home.home.spotifyWebApi.getTrack(trackID)
             .then((response) => {
                 console.log('Fetched track information - for track art!', response);
                 if (response) {
                     this.setState({ top_artist_id: response.artists[0].id })
+                    this.setState({ top_album_art: response.album.images[0].url })
                 }
             })
-    }
 
-    getArtistArt(artistID) {
-        this.props.home.home.spotifyWebApi.getArtist(artistID)
+        this.props.home.home.spotifyWebApi.getArtist(this.state.top_artist_id)
             .then((response) => {
                 console.log('Fetched track information - for track art!', response);
                 if (response) {
                     this.setState({ top_artist_art: response.images[0].url })
-                }
-            })
-    }
-
-    getAlbumArt(trackID) {
-        this.props.home.home.spotifyWebApi.getTrack(trackID)
-            .then((response) => {
-                console.log('Fetched track information - for track art!', response);
-                if (response) {
-                    this.setState({ top_album_art: response.album.images[0].url })
                 }
             })
     }
@@ -239,9 +283,7 @@ class EndRoom extends Component {
     }
 
     changeFavouritesRender(category) {
-        this.getArtistID(this.props.newroom.stats.id[this.state.albums.indexOf(this.mode(this.state.albums))])
-        this.getArtistArt(this.state.top_artist_id)
-        this.getAlbumArt(this.props.newroom.stats.id[this.state.albums.indexOf(this.mode(this.state.albums))])
+        this.getAllArt(this.props.newroom.stats.id[this.state.albums.indexOf(this.mode(this.state.albums))])
         this.setState({ render_favourites: category })
     }
 
@@ -273,6 +315,7 @@ class EndRoom extends Component {
         switch (this.state.render_top_three) {
             default: return (
                 <div>
+                    <h3>Your average tempo is {this.state.avg_bpm} BPM</h3>
                     <Grid container spacing={6} justify="center">
                         <Grid item xs={2}>
                             <img className='endroom-image' src={this.state.art[this.state.top_bpm[0]]} alt="" />
@@ -288,6 +331,7 @@ class EndRoom extends Component {
             )
             case 'energy': return (
                 <div>
+                    <h3>Your music is {this.state.percent_energy}% energetic</h3>
                     <Grid container spacing={6} justify="center">
                         <Grid item xs={2}>
                             <img className='endroom-image' src={this.state.art[this.state.top_energy[0]]} alt="" />
@@ -303,6 +347,7 @@ class EndRoom extends Component {
             )
             case 'dance': return (
                 <div>
+                    <h3>Your music is {this.state.percent_dance}% danceable</h3>
                     <Grid container spacing={6} justify="center">
                         <Grid item xs={2}>
                             <img className='endroom-image' src={this.state.art[this.state.top_dance[0]]} alt="" />
@@ -318,6 +363,7 @@ class EndRoom extends Component {
             )
             case 'valence': return (
                 <div>
+                    <h3>Your music is {this.state.percent_valence}% high valence</h3>
                     <Grid container spacing={6} justify="center">
                         <Grid item xs={2}>
                             <img className='endroom-image' src={this.state.art[this.state.top_valence[0]]} alt="" />
@@ -443,6 +489,7 @@ class EndRoom extends Component {
     render() {
         return (
             <div className="EndRoom">
+                {this.runGetAllArt()}
                 {this._renderSubComp()}
                 {this.getStats()}
             </div>

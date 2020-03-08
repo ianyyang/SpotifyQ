@@ -81,7 +81,12 @@ class HostRoom extends Component {
     }
 
     throttleGetNowPlaying() {
-        setTimeout(() => { this.getNowPlaying() }, 1000);
+        switch (this.state.render) {
+            default: 
+                setTimeout(() => { this.getNowPlaying() }, 1000)
+                break;
+            case 'end': break;
+        }
     }
 
     resumePlayback() {
